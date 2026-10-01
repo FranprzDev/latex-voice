@@ -6,7 +6,7 @@ export function friendlyError(e: unknown): string {
 	const lower = msg.toLowerCase();
 
 	if (lower.includes("401") || lower.includes("invalid api key") || lower.includes("unauthorized"))
-		return "API key inválida. Revisala en Settings → LaTeX Voice.";
+		return "API key inválida. Revisala en Settings → Vibe LaTeX.";
 	if (lower.includes("429") || lower.includes("rate limit"))
 		return "Límite de la API alcanzado. Esperá un momento.";
 	if (lower.includes("402") || lower.includes("insufficient") || lower.includes("billing"))

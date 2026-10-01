@@ -1,4 +1,4 @@
-# LaTeX Voice
+# Vibe LaTeX
 
 Dictate math and notes by voice in Obsidian. Speak in Spanish or English —
 your words are transcribed and converted into Markdown + LaTeX at the cursor.
@@ -11,7 +11,7 @@ your words are transcribed and converted into Markdown + LaTeX at the cursor.
 voice → transcription (gpt-transcribe) → LLM conversion → Markdown + LaTeX
 ```
 
-1. Run **LaTeX Voice: Start/stop voice dictation** (ribbon icon or hotkey)
+1. Run **Vibe LaTeX: Start/stop voice dictation** (ribbon icon or hotkey)
 2. Speak — e.g. *"sumatoria de i igual a uno hasta n de i al cuadrado"*
 3. Run the command again → `$\sum_{i=1}^{n} i^2$` appears at the cursor
 
@@ -29,7 +29,7 @@ voice → transcription (gpt-transcribe) → LLM conversion → Markdown + LaTeX
 ## Setup
 
 1. Install the plugin, enable it
-2. Settings → LaTeX Voice → paste your **OpenAI API key**
+2. Settings → Vibe LaTeX → paste your **OpenAI API key**
 3. Optional: assign a hotkey for **Start/stop voice dictation**
    (e.g. `Cmd+Shift+M`)
 4. Grant microphone permission when macOS asks

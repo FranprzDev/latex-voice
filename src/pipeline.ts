@@ -29,7 +29,7 @@ export async function dictatePipeline(
 	if (!t.text.trim()) {
 		throw new Error("empty transcript");
 	}
-	console.log("[latex-voice] transcript:", t.text);
+	console.log("[vibe-latex] transcript:", t.text);
 	const c = await provider.convertToLatex(t.text, {
 		systemPrompt: settings.conversionPrompt,
 	});
