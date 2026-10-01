@@ -33,9 +33,11 @@ export async function dictatePipeline(
 	const c = await provider.convertToLatex(t.text, {
 		systemPrompt: settings.conversionPrompt,
 	});
+	// "//" is the spoken paragraph-break marker.
+	const output = c.text.replace(/\s*\/\/\s*/g, "\n\n").trim();
 	return {
 		transcript: t.text,
-		output: c.text,
+		output,
 		usage: {
 			audioSeconds: t.durationSeconds ?? audioSeconds,
 			inputTokens: c.inputTokens,

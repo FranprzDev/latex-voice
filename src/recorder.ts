@@ -1,3 +1,13 @@
+export interface CaptureOptions {
+	signal?: AbortSignal;
+	/** End the phrase after this much silence once speech was heard. */
+	silenceMs?: number;
+	/** Max phrase length. */
+	maxMs?: number;
+	/** Give up if no speech at all for this long. */
+	graceMs?: number;
+}
+
 export class AudioRecorder {
 	private recorder: MediaRecorder | null = null;
 	private stream: MediaStream | null = null;
@@ -53,6 +63,71 @@ export class AudioRecorder {
 				reject(e);
 			};
 			recorder.stop();
+		});
+	}
+
+	/**
+	 * Record one phrase: starts the mic, ends when the speaker pauses
+	 * (~silenceMs of low volume after speech), hits maxMs, or opts.signal
+	 * aborts. Returns null if nothing was heard before graceMs.
+	 */
+	async capturePhrase(opts: CaptureOptions = {}): Promise<Blob | null> {
+		const silenceMs = opts.silenceMs ?? 1600;
+		const maxMs = opts.maxMs ?? 20_000;
+		const graceMs = opts.graceMs ?? 10_000;
+
+		await this.start();
+		const stream = this.stream;
+		if (!stream) throw new Error("No stream after start");
+
+		const audioCtx = new AudioContext();
+		const analyser = audioCtx.createAnalyser();
+		analyser.fftSize = 512;
+		audioCtx.createMediaStreamSource(stream).connect(analyser);
+		const buf = new Uint8Array(analyser.frequencyBinCount);
+
+		return new Promise<Blob | null>((resolve) => {
+			let heardSpeech = false;
+			let silenceStart: number | null = null;
+			let finished = false;
+			const start = Date.now();
+
+			const finish = (keep: boolean) => {
+				if (finished) return;
+				finished = true;
+				clearInterval(iv);
+				void audioCtx.close().catch(() => undefined);
+				this.stop()
+					.then((b) => resolve(keep ? b : null))
+					.catch(() => resolve(null));
+			};
+
+			const onAbort = () => finish(true);
+			opts.signal?.addEventListener("abort", onAbort, { once: true });
+
+			const iv = window.setInterval(() => {
+				analyser.getByteTimeDomainData(buf);
+				let sum = 0;
+				for (const v of buf) {
+					const d = v - 128;
+					sum += d * d;
+				}
+				const rms = Math.sqrt(sum / buf.length);
+				const now = Date.now();
+
+				if (rms > 8) {
+					heardSpeech = true;
+					silenceStart = null;
+				} else if (heardSpeech && silenceStart === null) {
+					silenceStart = now;
+				}
+
+				if (opts.signal?.aborted) return finish(true);
+				if (now - start > maxMs) return finish(true);
+				if (heardSpeech && silenceStart && now - silenceStart > silenceMs)
+					return finish(true);
+				if (!heardSpeech && now - start > graceMs) return finish(false);
+			}, 100);
 		});
 	}
 

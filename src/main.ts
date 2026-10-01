@@ -22,6 +22,7 @@ export default class LatexVoicePlugin extends Plugin {
 	declare settings: LatexVoiceSettings;
 	private recorder = new AudioRecorder();
 	private statusBarEl!: HTMLElement;
+	private sessionAbort: AbortController | null = null;
 
 	async onload() {
 		await this.loadSettings();
@@ -50,6 +51,7 @@ export default class LatexVoicePlugin extends Plugin {
 	}
 
 	onunload() {
+		this.sessionAbort?.abort();
 		this.recorder.dispose();
 	}
 
@@ -70,65 +72,63 @@ export default class LatexVoicePlugin extends Plugin {
 			await this.dictateFromFile(this.settings.testAudioPath);
 			return;
 		}
-		if (this.recorder.isRecording) {
-			await this.stopAndProcess();
+		if (this.sessionAbort) {
+			this.sessionAbort.abort();
 			return;
 		}
 		if (!this.settings.openaiApiKey) {
 			new Notice("LaTeX Voice: falta la API key (Settings → LaTeX Voice).");
 			return;
 		}
-		try {
-			await this.recorder.start();
-			this.updateStatus("grabando…");
-		} catch (e) {
-			new Notice(`LaTeX Voice: ${friendlyError(e)}`);
+		if (!this.app.workspace.getActiveViewOfType(MarkdownView)) {
+			new Notice("LaTeX Voice: abrí una nota antes de dictar.");
+			return;
 		}
+		void this.runSession();
 	}
 
-	private async stopAndProcess() {
-		let audio: Blob;
-		try {
-			audio = await this.recorder.stop();
-		} catch {
-			this.updateStatus("");
-			return;
-		}
-
-		const view = this.app.workspace.getActiveViewOfType(MarkdownView);
-		if (!view) {
-			new Notice("LaTeX Voice: abrí una nota antes de dictar.");
-			this.updateStatus("");
-			return;
-		}
+	/**
+	 * Continuous dictation: keeps listening, splits on silences, processes
+	 * each phrase and appends it at the cursor. Ends on second command run.
+	 */
+	private async runSession() {
+		this.sessionAbort = new AbortController();
+		const signal = this.sessionAbort.signal;
+		const provider = createProvider(this.settings);
+		this.updateStatus("escuchando…");
+		new Notice("LaTeX Voice: escuchando. Volvé a correr el comando para terminar.");
 
 		try {
-			const provider = createProvider(this.settings);
-			const ext = audio.type.includes("webm") ? "webm" : "m4a";
-			console.log(`[latex-voice] audio blob: ${audio.size} bytes, type=${audio.type}`);
-			if (audio.size < 1000) {
-				throw new Error("empty transcript");
-			}
+			while (!signal.aborted) {
+				const blob = await this.recorder.capturePhrase({ signal });
+				if (!blob || blob.size < 800) continue;
 
-			this.updateStatus("transcribing…");
-			const { output, usage } = await dictatePipeline(
-				provider,
-				audio,
-				`dictation.${ext}`,
-				this.settings,
-				this.recorder.lastDurationSeconds,
-			);
-			await this.recordUsage(usage);
-
-			view.editor.replaceSelection(output);
-			if (this.settings.saveAudio) {
-				await this.saveAudioFile(audio, ext);
+				this.updateStatus("procesando…");
+				try {
+					const { output, usage } = await dictatePipeline(
+						provider,
+						blob,
+						`phrase.${blob.type.includes("webm") ? "webm" : "m4a"}`,
+						this.settings,
+						this.recorder.lastDurationSeconds,
+					);
+					await this.recordUsage(usage);
+					const view = this.app.workspace.getActiveViewOfType(MarkdownView);
+					if (view) view.editor.replaceSelection(output + "\n");
+					if (this.settings.saveAudio) {
+						await this.saveAudioFile(blob, "webm");
+					}
+				} catch (e) {
+					new Notice(`LaTeX Voice: ${friendlyError(e)}`);
+				}
+				if (!signal.aborted) this.updateStatus("escuchando…");
 			}
-			new Notice("LaTeX Voice: listo.");
 		} catch (e) {
 			new Notice(`LaTeX Voice: ${friendlyError(e)}`);
 		} finally {
+			this.sessionAbort = null;
 			this.updateStatus("");
+			new Notice("LaTeX Voice: dictado terminado.");
 		}
 	}
 
