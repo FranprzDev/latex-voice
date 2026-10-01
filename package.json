@@ -6,7 +6,7 @@
 	"scripts": {
 		"dev": "node esbuild.config.mjs",
 		"build": "node esbuild.config.mjs production",
-		"test": "vitest run test/openai.test.ts test/pipeline.test.ts test/recorder.test.ts test/errors.test.ts test/settings.test.ts test/e2e.test.ts",
+		"test": "vitest run test/openai.test.ts test/pipeline.test.ts test/recorder.test.ts test/errors.test.ts test/settings.test.ts test/fixtures.test.ts test/e2e.test.ts",
 		"test:e2e": "vitest run test/e2e.test.ts",
 		"test:obsidian": "vitest run test/obsidian.e2e.test.ts"
 	},
