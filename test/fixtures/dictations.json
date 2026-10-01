@@ -1,32 +1,967 @@
 [
 	{
 		"file": "integral.m4a",
+		"subject": "Análisis Matemático 1",
 		"language": "es",
 		"dictated": "integral de a a b de efe de equis de equis",
-		"mustMatch": ["\\\\int_a\\^b", "f\\(x\\)", "d\\s?x"]
+		"mustMatch": [
+			"\\\\int_a\\^b",
+			"f\\(x\\)",
+			"d\\s?x"
+		]
 	},
 	{
 		"file": "sum.m4a",
+		"subject": "Análisis Matemático 1",
 		"language": "es",
 		"dictated": "la sumatoria de i igual a uno hasta n de i al cuadrado",
-		"mustMatch": ["\\\\sum_\\{i=1\\}", "\\^\\{?n\\}?", "i\\^2"]
+		"mustMatch": [
+			"\\\\sum_\\{?i=1\\}?",
+			"\\^\\{?n\\}?",
+			"i\\^2"
+		]
 	},
 	{
 		"file": "quadratic.m4a",
+		"subject": "Análisis Matemático 1",
 		"language": "es",
 		"dictated": "x igual a menos b más o menos raíz cuadrada de b al cuadrado menos cuatro a c sobre dos a",
-		"mustMatch": ["\\\\frac", "\\\\sqrt", "\\\\pm", "b\\^2"]
+		"mustMatch": [
+			"\\\\frac",
+			"\\\\sqrt",
+			"\\\\pm",
+			"b\\^2"
+		]
+	},
+	{
+		"file": "am1-limit.m4a",
+		"subject": "Análisis Matemático 1",
+		"language": "es",
+		"dictated": "el límite cuando equis tiende a cero de seno de equis sobre equis es igual a uno",
+		"mustMatch": [
+			"\\\\lim",
+			"x\\\\to ?0|x \\\\rightarrow ?0",
+			"\\\\sin",
+			"= ?1"
+		]
+	},
+	{
+		"file": "am1-derivdef.m4a",
+		"subject": "Análisis Matemático 1",
+		"language": "es",
+		"dictated": "la derivada de efe en equis es el límite cuando hache tiende a cero de efe de equis más hache menos efe de equis sobre hache",
+		"mustMatch": [
+			"\\\\lim",
+			"h ?\\\\to ?0|h ?\\\\rightarrow ?0",
+			"f\\(x ?\\+ ?h\\) ?- ?f\\(x\\)"
+		]
+	},
+	{
+		"file": "am1-taylor.m4a",
+		"subject": "Análisis Matemático 1",
+		"language": "es",
+		"dictated": "la serie de taylor de e a la equis es la sumatoria de ene igual a cero hasta infinito de equis a la ene sobre ene factorial",
+		"mustMatch": [
+			"\\\\sum_\\{?n ?= ?0\\}?",
+			"\\^\\{?\\\\infty",
+			"x\\^\\{?n",
+			"n!"
+		]
+	},
+	{
+		"file": "am1-lhopital.m4a",
+		"subject": "Análisis Matemático 1",
+		"language": "es",
+		"dictated": "aplicamos la regla de l'hôpital al límite cuando equis tiende a cero de e a la equis menos uno sobre equis",
+		"mustMatch": [
+			"\\\\lim",
+			"e\\^\\{?x",
+			"\\\\frac"
+		]
+	},
+	{
+		"file": "am1-chain.m4a",
+		"subject": "Análisis Matemático 1",
+		"language": "es",
+		"dictated": "la derivada de seno de equis al cuadrado es dos equis por coseno de equis al cuadrado",
+		"mustMatch": [
+			"\\\\cos",
+			"2 ?x",
+			"x\\^2"
+		]
+	},
+	{
+		"file": "am1-product.m4a",
+		"subject": "Análisis Matemático 1",
+		"language": "es",
+		"dictated": "la derivada de un producto es efe prima por ge más efe por ge prima",
+		"mustMatch": [
+			"f' ?g|f'\\\\cdot ?g|f'\\(x\\)",
+			"f ?g'|f\\(x\\)"
+		]
+	},
+	{
+		"file": "am1-quotient.m4a",
+		"subject": "Análisis Matemático 1",
+		"language": "es",
+		"dictated": "la derivada de un cociente es efe prima ge menos efe ge prima sobre ge al cuadrado",
+		"mustMatch": [
+			"\\\\frac",
+			"g\\^2"
+		]
+	},
+	{
+		"file": "am1-improper.m4a",
+		"subject": "Análisis Matemático 1",
+		"language": "es",
+		"dictated": "la integral impropia de uno a infinito de uno sobre equis al cuadrado converge a uno",
+		"mustMatch": [
+			"\\\\int_?\\{?1\\}?\\^?\\{?\\\\infty",
+			"\\\\frac\\{1\\}"
+		]
+	},
+	{
+		"file": "am1-parts.m4a",
+		"subject": "Análisis Matemático 1",
+		"language": "es",
+		"dictated": "integramos por partes la integral de equis por e a la equis de equis",
+		"mustMatch": [
+			"\\\\int",
+			"x ?e\\^?\\{?x|xe\\^",
+			"d\\s?x"
+		]
+	},
+	{
+		"file": "am1-subst.m4a",
+		"subject": "Análisis Matemático 1",
+		"language": "es",
+		"dictated": "por sustitución con u igual a equis al cuadrado",
+		"mustMatch": [
+			"u ?= ?x\\^2"
+		]
+	},
+	{
+		"file": "am1-continuity.m4a",
+		"subject": "Análisis Matemático 1",
+		"language": "es",
+		"dictated": "efe es continua en a si el límite cuando equis tiende a a de efe de equis es igual a efe de a",
+		"mustMatch": [
+			"\\\\lim",
+			"f\\(a\\)"
+		]
+	},
+	{
+		"file": "am1-mvt.m4a",
+		"subject": "Análisis Matemático 1",
+		"language": "es",
+		"dictated": "el teorema del valor medio garantiza un ce donde efe prima de ce es efe de be menos efe de a sobre be menos a",
+		"mustMatch": [
+			"f'\\(c\\)",
+			"f\\(b\\) ?- ?f\\(a\\)"
+		]
+	},
+	{
+		"file": "am1-euler.m4a",
+		"subject": "Análisis Matemático 1",
+		"language": "es",
+		"dictated": "e a la i pi más uno es igual a cero",
+		"mustMatch": [
+			"e\\^\\{?i ?\\\\pi|e\\^\\{i\\\\pi",
+			"\\+ ?1 ?= ?0"
+		]
+	},
+	{
+		"file": "am1-arctan.m4a",
+		"subject": "Análisis Matemático 1",
+		"language": "es",
+		"dictated": "la derivada de arco tangente de equis es uno sobre uno más equis al cuadrado",
+		"mustMatch": [
+			"\\\\arctan|arctan",
+			"\\\\frac\\{1\\}\\{1 ?\\+ ?x\\^2\\}"
+		]
+	},
+	{
+		"file": "am1-ln.m4a",
+		"subject": "Análisis Matemático 1",
+		"language": "es",
+		"dictated": "la derivada de logaritmo natural de equis es uno sobre equis",
+		"mustMatch": [
+			"\\\\ln|log",
+			"\\\\frac\\{1\\}\\{x\\}"
+		]
+	},
+	{
+		"file": "am1-exp-deriv.m4a",
+		"subject": "Análisis Matemático 1",
+		"language": "es",
+		"dictated": "la derivada de e a la equis es e a la equis",
+		"mustMatch": [
+			"e\\^\\{?x",
+			"\\\\frac\\{d|derivada"
+		]
+	},
+	{
+		"file": "am1-seq.m4a",
+		"subject": "Análisis Matemático 1",
+		"language": "es",
+		"dictated": "la sucesión a ene tiende a ele si para todo épsilon existe un ene cero",
+		"mustMatch": [
+			"a_n|a_\\{?n",
+			"\\\\varepsilon|\\\\epsilon|épsilon",
+			"n_0|N"
+		]
+	},
+	{
+		"file": "am1-tangent.m4a",
+		"subject": "Análisis Matemático 1",
+		"language": "es",
+		"dictated": "la recta tangente en el punto a es ye igual a efe de a más efe prima de a por equis menos a",
+		"mustMatch": [
+			"f\\(a\\)",
+			"f'\\(a\\)"
+		]
+	},
+	{
+		"file": "am1-comp.m4a",
+		"subject": "Análisis Matemático 1",
+		"language": "es",
+		"dictated": "la composición efe de ge de equis se escribe efe circulo ge",
+		"mustMatch": [
+			"f ?\\\\circ ?g|f\\(g"
+		]
+	},
+	{
+		"file": "am1-inf-limit.m4a",
+		"subject": "Análisis Matemático 1",
+		"language": "es",
+		"dictated": "el límite cuando equis tiende a infinito de uno sobre equis es cero",
+		"mustMatch": [
+			"\\\\infty",
+			"\\\\frac\\{1\\}\\{x\\}|1/x",
+			"= ?0"
+		]
+	},
+	{
+		"file": "am1-bolzano.m4a",
+		"subject": "Análisis Matemático 1",
+		"language": "es",
+		"dictated": "por el teorema de bolzano si efe de a y efe de be tienen signos opuestos existe una raíz en el intervalo",
+		"mustMatch": [
+			"f\\(a\\)",
+			"f\\(b\\)"
+		]
+	},
+	{
+		"file": "am2-doubleint.m4a",
+		"subject": "Análisis Matemático 2",
+		"language": "es",
+		"dictated": "la integral doble sobre la región erre de efe de equis ye diferencial de equis diferencial de ye",
+		"mustMatch": [
+			"\\\\iint|\\\\int ?\\\\int",
+			"f\\(x ?, ?y\\)",
+			"d\\s?[xy][^\\n]*d\\s?[xy]"
+		]
+	},
+	{
+		"file": "am2-gradient.m4a",
+		"subject": "Análisis Matemático 2",
+		"language": "es",
+		"dictated": "el gradiente de efe es parcial efe sobre parcial equis coma parcial efe sobre parcial ye",
+		"mustMatch": [
+			"\\\\frac\\{\\\\partial",
+			"\\\\partial ?x",
+			"\\\\partial ?y"
+		]
+	},
+	{
+		"file": "am2-ode.m4a",
+		"subject": "Análisis Matemático 2",
+		"language": "es",
+		"dictated": "i griega prima más equis por i griega es igual a seno de equis",
+		"mustMatch": [
+			"y'|y ?\\\\prime",
+			"\\\\sin"
+		]
+	},
+	{
+		"file": "am2-divergence.m4a",
+		"subject": "Análisis Matemático 2",
+		"language": "es",
+		"dictated": "la divergencia del campo es parcial efe uno sobre parcial equis más parcial efe dos sobre parcial ye",
+		"mustMatch": [
+			"\\\\nabla ?\\\\cdot|\\\\operatorname\\{div\\}|\\\\mathrm\\{div\\}|div",
+			"\\\\partial"
+		]
+	},
+	{
+		"file": "am2-curl.m4a",
+		"subject": "Análisis Matemático 2",
+		"language": "es",
+		"dictated": "el rotacional de efe es nabla producto vectorial efe",
+		"mustMatch": [
+			"\\\\nabla ?\\\\times"
+		]
+	},
+	{
+		"file": "am2-laplacian.m4a",
+		"subject": "Análisis Matemático 2",
+		"language": "es",
+		"dictated": "el laplaciano de efe es nabla al cuadrado de efe",
+		"mustMatch": [
+			"\\\\nabla\\^2|\\\\Delta"
+		]
+	},
+	{
+		"file": "am2-lagrange.m4a",
+		"subject": "Análisis Matemático 2",
+		"language": "es",
+		"dictated": "con multiplicadores de lagrange nabla efe es lambda por nabla ge",
+		"mustMatch": [
+			"\\\\lambda",
+			"\\\\nabla|Lagrange"
+		]
+	},
+	{
+		"file": "am2-polar.m4a",
+		"subject": "Análisis Matemático 2",
+		"language": "es",
+		"dictated": "en coordenadas polares equis es erre coseno de tita y ye es erre seno de tita",
+		"mustMatch": [
+			"r ?\\\\cos ?\\\\theta|r\\\\cos",
+			"r ?\\\\sin ?\\\\theta|r\\\\sin"
+		]
+	},
+	{
+		"file": "am2-triple.m4a",
+		"subject": "Análisis Matemático 2",
+		"language": "es",
+		"dictated": "la integral triple sobre el volumen ve de la densidad de equis ye zeta",
+		"mustMatch": [
+			"\\\\iiint|\\\\int ?\\\\int ?\\\\int",
+			"d\\s?V|dV|d\\s?x"
+		]
+	},
+	{
+		"file": "am2-line.m4a",
+		"subject": "Análisis Matemático 2",
+		"language": "es",
+		"dictated": "la integral de línea del campo efe a lo largo de la curva ce",
+		"mustMatch": [
+			"\\\\int_?\\{?C|\\\\oint",
+			"d\\s?(\\\\mathbf\\{)?r|d\\s?l|d\\s?s"
+		]
+	},
+	{
+		"file": "am2-green.m4a",
+		"subject": "Análisis Matemático 2",
+		"language": "es",
+		"dictated": "el teorema de green convierte la integral de línea en una integral doble sobre la región",
+		"mustMatch": [
+			"\\\\oint|\\\\iint|green",
+			"\\\\iint|\\\\oint"
+		]
+	},
+	{
+		"file": "am2-stokes.m4a",
+		"subject": "Análisis Matemático 2",
+		"language": "es",
+		"dictated": "el teorema de stokes relaciona la circulación con la integral del rotacional sobre la superficie",
+		"mustMatch": [
+			"\\\\oint|\\\\nabla ?\\\\times|rotacional|Stokes"
+		]
+	},
+	{
+		"file": "am2-ode2.m4a",
+		"subject": "Análisis Matemático 2",
+		"language": "es",
+		"dictated": "i griega segunda más omega al cuadrado i griega igual a cero tiene solución a seno de omega te más be coseno de omega te",
+		"mustMatch": [
+			"y''|y ?\\\\prime\\\\prime",
+			"\\\\omega",
+			"\\\\sin|\\\\cos"
+		]
+	},
+	{
+		"file": "am2-fourier.m4a",
+		"subject": "Análisis Matemático 2",
+		"language": "es",
+		"dictated": "la serie de fourier de efe es a cero sobre dos más la sumatoria de a ene coseno de ene equis más be ene seno de ene equis",
+		"mustMatch": [
+			"a_0|a_\\{?0",
+			"\\\\sum",
+			"\\\\cos",
+			"\\\\sin"
+		]
+	},
+	{
+		"file": "am2-laplace.m4a",
+		"subject": "Análisis Matemático 2",
+		"language": "es",
+		"dictated": "la transformada de laplace de e a la a te es uno sobre ese menos a",
+		"mustMatch": [
+			"\\\\mathcal\\{L\\}|L|laplace|Laplace",
+			"\\\\frac\\{1\\}\\{s ?- ?a\\}|1/\\(s"
+		]
+	},
+	{
+		"file": "am2-partial.m4a",
+		"subject": "Análisis Matemático 2",
+		"language": "es",
+		"dictated": "la derivada parcial de equis al cuadrado por ye respecto de equis es dos equis ye",
+		"mustMatch": [
+			"\\\\frac\\{\\\\partial|\\\\partial",
+			"2 ?x ?y"
+		]
+	},
+	{
+		"file": "am2-hessian.m4a",
+		"subject": "Análisis Matemático 2",
+		"language": "es",
+		"dictated": "el hessiano es la matriz de segundas derivadas parciales de efe",
+		"mustMatch": [
+			"\\\\partial\\^2|H|hessiana|Hessiana|hessian|Hessian"
+		]
+	},
+	{
+		"file": "am2-saddle.m4a",
+		"subject": "Análisis Matemático 2",
+		"language": "es",
+		"dictated": "un punto de silla tiene determinante del hessiano negativo",
+		"mustMatch": [
+			"< ?0|det|H"
+		]
+	},
+	{
+		"file": "am2-tangent-plane.m4a",
+		"subject": "Análisis Matemático 2",
+		"language": "es",
+		"dictated": "el plano tangente a la superficie zeta igual efe de equis ye",
+		"mustMatch": [
+			"z ?= ?f|z ?=|f\\(x ?, ?y\\)"
+		]
+	},
+	{
+		"file": "am2-separable.m4a",
+		"subject": "Análisis Matemático 2",
+		"language": "es",
+		"dictated": "la ecuación i griega prima igual equis por i griega es de variables separables",
+		"mustMatch": [
+			"y'|y ?\\\\prime|dy|d\\s?y",
+			"x ?y"
+		]
+	},
+	{
+		"file": "am2-exact.m4a",
+		"subject": "Análisis Matemático 2",
+		"language": "es",
+		"dictated": "una ecuación diferencial exacta satisface parcial eme sobre parcial ye igual parcial ene sobre parcial equis",
+		"mustMatch": [
+			"\\\\frac\\{\\\\partial ?M|\\\\partial ?M|exacta",
+			"\\\\partial"
+		]
+	},
+	{
+		"file": "f1-newton.m4a",
+		"subject": "Física 1",
+		"language": "es",
+		"dictated": "la segunda ley de newton dice que efe es igual a eme por a",
+		"mustMatch": [
+			"F ?= ?m ?\\\\cdot ?a|F ?= ?m ?a|F ?= ?ma"
+		]
+	},
+	{
+		"file": "f1-velocity.m4a",
+		"subject": "Física 1",
+		"language": "es",
+		"dictated": "la velocidad es la derivada de la posición equis respecto del tiempo te",
+		"mustMatch": [
+			"v ?=|\\\\dot ?x",
+			"\\\\frac\\{d|\\\\dot",
+			"d\\s?t|dt"
+		]
+	},
+	{
+		"file": "f1-kinetic.m4a",
+		"subject": "Física 1",
+		"language": "es",
+		"dictated": "la energía cinética es un medio de eme por ve al cuadrado",
+		"mustMatch": [
+			"\\\\frac\\{1\\}\\{2\\}|\\\\tfrac\\{1\\}\\{2\\}|1/2|\\\\frac12",
+			"m ?v\\^2|mv\\^\\{?2"
+		]
+	},
+	{
+		"file": "f1-harmonic.m4a",
+		"subject": "Física 1",
+		"language": "es",
+		"dictated": "equis de te es igual a a por coseno de omega te más fi",
+		"mustMatch": [
+			"x\\(t\\)",
+			"\\\\cos",
+			"\\\\omega",
+			"\\\\phi|\\\\varphi"
+		]
+	},
+	{
+		"file": "f1-mruv.m4a",
+		"subject": "Física 1",
+		"language": "es",
+		"dictated": "en el mruv la posición es equis cero más ve cero te más un medio de a te al cuadrado",
+		"mustMatch": [
+			"x_0|x_\\{?0",
+			"v_0 ?t|v_\\{?0",
+			"\\\\frac\\{1\\}\\{2\\} ?a ?t\\^2|at\\^2|a ?t\\^\\{?2"
+		]
+	},
+	{
+		"file": "f1-freefall.m4a",
+		"subject": "Física 1",
+		"language": "es",
+		"dictated": "en caída libre la aceleración es ge igual a nueve coma ocho metros por segundo al cuadrado",
+		"mustMatch": [
+			"g",
+			"9\\{?,\\}?8|9[.,]8"
+		]
+	},
+	{
+		"file": "f1-projectile.m4a",
+		"subject": "Física 1",
+		"language": "es",
+		"dictated": "en el tiro parabólico la componente horizontal es ve coseno de tita y la vertical es ve seno de tita",
+		"mustMatch": [
+			"v ?\\\\cos ?\\\\theta|v\\\\cos",
+			"v ?\\\\sin ?\\\\theta|v\\\\sin"
+		]
+	},
+	{
+		"file": "f1-friction.m4a",
+		"subject": "Física 1",
+		"language": "es",
+		"dictated": "la fuerza de rozamiento es mu por la normal",
+		"mustMatch": [
+			"\\\\mu",
+			"N|f_r|rozamiento"
+		]
+	},
+	{
+		"file": "f1-newton1.m4a",
+		"subject": "Física 1",
+		"language": "es",
+		"dictated": "la primera ley de newton dice que si la fuerza neta es cero la velocidad es constante",
+		"mustMatch": [
+			"F",
+			"v"
+		]
+	},
+	{
+		"file": "f1-newton3.m4a",
+		"subject": "Física 1",
+		"language": "es",
+		"dictated": "la tercera ley de newton dice que efe uno dos es menos efe dos uno",
+		"mustMatch": [
+			"F_\\{?12|F_12",
+			"F_\\{?21|F_21"
+		]
+	},
+	{
+		"file": "f1-work.m4a",
+		"subject": "Física 1",
+		"language": "es",
+		"dictated": "el trabajo es efe por de por coseno de tita",
+		"mustMatch": [
+			"W ?= ?F|W",
+			"\\\\cos ?\\\\theta|\\\\cos"
+		]
+	},
+	{
+		"file": "f1-potential.m4a",
+		"subject": "Física 1",
+		"language": "es",
+		"dictated": "la energía potencial gravitatoria es eme ge hache",
+		"mustMatch": [
+			"m ?g ?h|mgh"
+		]
+	},
+	{
+		"file": "f1-conserve.m4a",
+		"subject": "Física 1",
+		"language": "es",
+		"dictated": "por conservación de la energía eme ge hache es un medio de eme ve al cuadrado",
+		"mustMatch": [
+			"m ?g ?h|mgh",
+			"\\\\frac\\{1\\}\\{2\\}|1/2",
+			"v\\^2"
+		]
+	},
+	{
+		"file": "f1-power.m4a",
+		"subject": "Física 1",
+		"language": "es",
+		"dictated": "la potencia es el trabajo sobre el tiempo",
+		"mustMatch": [
+			"P ?= ?\\\\frac\\{W\\}\\{t\\}|P ?= ?W/t|P"
+		]
+	},
+	{
+		"file": "f1-momentum.m4a",
+		"subject": "Física 1",
+		"language": "es",
+		"dictated": "el momento lineal es eme por ve",
+		"mustMatch": [
+			"p ?= ?m ?v|mv"
+		]
+	},
+	{
+		"file": "f1-impulse.m4a",
+		"subject": "Física 1",
+		"language": "es",
+		"dictated": "el impulso es la variación del momento lineal",
+		"mustMatch": [
+			"J ?= ?\\\\Delta ?p|I ?= ?\\\\Delta ?p|\\\\Delta ?p"
+		]
+	},
+	{
+		"file": "f1-torque.m4a",
+		"subject": "Física 1",
+		"language": "es",
+		"dictated": "el torque es el producto vectorial de erre por efe",
+		"mustMatch": [
+			"\\\\tau",
+			"\\\\times|\\\\vec\\{r\\}|r ?\\\\times"
+		]
+	},
+	{
+		"file": "f1-inertia.m4a",
+		"subject": "Física 1",
+		"language": "es",
+		"dictated": "el momento de inercia de un disco es un medio de eme erre al cuadrado",
+		"mustMatch": [
+			"I ?= ?\\\\frac\\{1\\}\\{2\\} ?M ?R\\^2|\\\\frac\\{1\\}\\{2\\}|MR"
+		]
+	},
+	{
+		"file": "f1-angular.m4a",
+		"subject": "Física 1",
+		"language": "es",
+		"dictated": "el momento angular es ele igual erre vectorial pe",
+		"mustMatch": [
+			"L ?=|r ?\\\\times ?p|\\\\vec\\{r\\}"
+		]
+	},
+	{
+		"file": "f1-gravity.m4a",
+		"subject": "Física 1",
+		"language": "es",
+		"dictated": "la ley de gravitación universal es efe igual ge eme uno eme dos sobre erre al cuadrado",
+		"mustMatch": [
+			"G",
+			"\\\\frac\\{?m_1 ?m_2\\}?\\{?r\\^2|m_1|m 1"
+		]
+	},
+	{
+		"file": "f1-pendulum.m4a",
+		"subject": "Física 1",
+		"language": "es",
+		"dictated": "el período del péndulo es dos pi raíz de ele sobre ge",
+		"mustMatch": [
+			"2\\\\pi|2 ?\\\\pi",
+			"\\\\sqrt",
+			"l|L"
+		]
+	},
+	{
+		"file": "f1-centripetal.m4a",
+		"subject": "Física 1",
+		"language": "es",
+		"dictated": "la aceleración centrípeta es ve al cuadrado sobre erre",
+		"mustMatch": [
+			"\\\\frac\\{v\\^2\\}\\{r\\}|v\\^2/r|v\\^2"
+		]
+	},
+	{
+		"file": "f1-omega.m4a",
+		"subject": "Física 1",
+		"language": "es",
+		"dictated": "la velocidad angular es dos pi por la frecuencia",
+		"mustMatch": [
+			"\\\\omega ?= ?2 ?\\\\pi ?f|2\\\\pi ?f"
+		]
+	},
+	{
+		"file": "f1-hooke.m4a",
+		"subject": "Física 1",
+		"language": "es",
+		"dictated": "la ley de hooke es efe igual menos ka por equis",
+		"mustMatch": [
+			"F ?= ?- ?k ?x|- ?k ?x|-kx"
+		]
+	},
+	{
+		"file": "f2-gauss.m4a",
+		"subject": "Física 2",
+		"language": "es",
+		"dictated": "la ley de gauss dice que la integral de superficie cerrada del campo eléctrico es igual a la carga encerrada sobre épsilon cero",
+		"mustMatch": [
+			"\\\\oint|\\\\Phi|\\\\oiint",
+			"\\\\(varepsilon|epsilon)_0|epsilon_0",
+			"Q|q"
+		]
+	},
+	{
+		"file": "f2-wave.m4a",
+		"subject": "Física 2",
+		"language": "es",
+		"dictated": "la ecuación de onda es parcial al cuadrado de ye sobre parcial equis al cuadrado igual a uno sobre ve al cuadrado por parcial al cuadrado de ye sobre parcial te al cuadrado",
+		"mustMatch": [
+			"\\\\partial\\^2|\\\\partial ?\\^?2",
+			"v\\^2",
+			"\\\\partial ?t"
+		]
+	},
+	{
+		"file": "f2-coulomb.m4a",
+		"subject": "Física 2",
+		"language": "es",
+		"dictated": "la ley de coulomb es efe igual ka cu uno cu dos sobre erre al cuadrado",
+		"mustMatch": [
+			"k",
+			"q_1 ?q_2|q_\\{?1|q 1",
+			"r\\^2"
+		]
+	},
+	{
+		"file": "f2-efield.m4a",
+		"subject": "Física 2",
+		"language": "es",
+		"dictated": "el campo eléctrico es la fuerza sobre la carga de prueba",
+		"mustMatch": [
+			"E ?= ?\\\\frac\\{F\\}\\{q\\}|E ?= ?F/q|E"
+		]
+	},
+	{
+		"file": "f2-epotential.m4a",
+		"subject": "Física 2",
+		"language": "es",
+		"dictated": "la diferencia de potencial es menos la integral del campo eléctrico por de ele",
+		"mustMatch": [
+			"V|U",
+			"\\\\int",
+			"E"
+		]
+	},
+	{
+		"file": "f2-capacitor.m4a",
+		"subject": "Física 2",
+		"language": "es",
+		"dictated": "la capacidad es cu sobre ve",
+		"mustMatch": [
+			"C ?= ?\\\\frac\\{Q\\}\\{V\\}|C ?= ?Q/V|C"
+		]
+	},
+	{
+		"file": "f2-energy-cap.m4a",
+		"subject": "Física 2",
+		"language": "es",
+		"dictated": "la energía del capacitor es un medio de cu por ve al cuadrado",
+		"mustMatch": [
+			"\\\\frac\\{1\\}\\{2\\}|1/2",
+			"V\\^2|Q|C"
+		]
+	},
+	{
+		"file": "f2-ohm.m4a",
+		"subject": "Física 2",
+		"language": "es",
+		"dictated": "la ley de ohm es ve igual i por erre",
+		"mustMatch": [
+			"V ?= ?I ?\\\\cdot ?R|V ?= ?I ?\\\\times ?R|V ?= ?I ?R|IR"
+		]
+	},
+	{
+		"file": "f2-resistance.m4a",
+		"subject": "Física 2",
+		"language": "es",
+		"dictated": "la resistencia es ro por ele sobre a",
+		"mustMatch": [
+			"R ?= ?\\\\rho|\\\\rho",
+			"[lL]/A|\\\\frac\\{\\\\rho ?[lL]\\}\\{A\\}"
+		]
+	},
+	{
+		"file": "f2-kirchhoff.m4a",
+		"subject": "Física 2",
+		"language": "es",
+		"dictated": "la ley de nodos de kirchhoff dice que la suma de corrientes es cero",
+		"mustMatch": [
+			"\\\\sum",
+			"I",
+			"0|cero"
+		]
+	},
+	{
+		"file": "f2-lorentz.m4a",
+		"subject": "Física 2",
+		"language": "es",
+		"dictated": "la fuerza de lorentz es cu por ve vectorial be",
+		"mustMatch": [
+			"F ?=|q",
+			"\\\\times|\\\\vec\\{v\\}|v"
+		]
+	},
+	{
+		"file": "f2-ampere.m4a",
+		"subject": "Física 2",
+		"language": "es",
+		"dictated": "la ley de ampere dice que la circulación del campo magnético es mu cero por la corriente encerrada",
+		"mustMatch": [
+			"\\\\oint|\\\\mu_0|mu",
+			"I"
+		]
+	},
+	{
+		"file": "f2-faraday.m4a",
+		"subject": "Física 2",
+		"language": "es",
+		"dictated": "la ley de faraday dice que la fem es menos la derivada del flujo magnético",
+		"mustMatch": [
+			"\\\\mathcal\\{E\\}|fem|EMF|\\\\varepsilon",
+			"\\\\Phi|flujo",
+			"-"
+		]
+	},
+	{
+		"file": "f2-flux.m4a",
+		"subject": "Física 2",
+		"language": "es",
+		"dictated": "el flujo magnético es la integral de be por de a",
+		"mustMatch": [
+			"\\\\Phi|Phi",
+			"\\\\int",
+			"B"
+		]
+	},
+	{
+		"file": "f2-inductor.m4a",
+		"subject": "Física 2",
+		"language": "es",
+		"dictated": "la energía del inductor es un medio de ele por i al cuadrado",
+		"mustMatch": [
+			"\\\\frac\\{1\\}\\{2\\}|1/2",
+			"L ?I\\^2|LI"
+		]
+	},
+	{
+		"file": "f2-displacement.m4a",
+		"subject": "Física 2",
+		"language": "es",
+		"dictated": "maxwell agregó la corriente de desplazamiento épsilon cero por la derivada del flujo eléctrico",
+		"mustMatch": [
+			"\\\\epsilon_0|\\\\varepsilon_0|epsilon",
+			"\\\\Phi|flujo|\\\\frac"
+		]
+	},
+	{
+		"file": "f2-emwave.m4a",
+		"subject": "Física 2",
+		"language": "es",
+		"dictated": "la velocidad de la luz es uno sobre raíz de épsilon cero mu cero",
+		"mustMatch": [
+			"c ?= ?\\\\frac\\{1\\}|c ?=",
+			"\\\\sqrt",
+			"\\\\mu_0|mu"
+		]
+	},
+	{
+		"file": "f2-snell.m4a",
+		"subject": "Física 2",
+		"language": "es",
+		"dictated": "la ley de snell es ene uno seno de tita uno igual ene dos seno de tita dos",
+		"mustMatch": [
+			"n_1|n_\\{?1",
+			"\\\\sin",
+			"n_2|n_\\{?2"
+		]
+	},
+	{
+		"file": "f2-interference.m4a",
+		"subject": "Física 2",
+		"language": "es",
+		"dictated": "la interferencia constructiva ocurre cuando la diferencia de camino es un múltiplo entero de lambda",
+		"mustMatch": [
+			"\\\\Delta|d",
+			"\\\\lambda",
+			"m|n"
+		]
+	},
+	{
+		"file": "f2-doppler.m4a",
+		"subject": "Física 2",
+		"language": "es",
+		"dictated": "el efecto doppler da una frecuencia efe prima igual efe por ve más ve cero sobre ve",
+		"mustMatch": [
+			"f'|f ?\\\\prime|f'",
+			"\\\\frac",
+			"v"
+		]
+	},
+	{
+		"file": "f2-heat.m4a",
+		"subject": "Física 2",
+		"language": "es",
+		"dictated": "el calor es eme por ce por delta te",
+		"mustMatch": [
+			"Q ?= ?m ?c|mc",
+			"\\\\Delta ?[Tt]|delta"
+		]
+	},
+	{
+		"file": "f2-ideal.m4a",
+		"subject": "Física 2",
+		"language": "es",
+		"dictated": "la ley de gases ideales es pe ve igual ene erre te",
+		"mustMatch": [
+			"P ?V ?= ?n ?R ?T|PV ?= ?nRT|PV"
+		]
+	},
+	{
+		"file": "f2-entropy.m4a",
+		"subject": "Física 2",
+		"language": "es",
+		"dictated": "la variación de entropía es delta ese igual de cu sobre te",
+		"mustMatch": [
+			"\\\\Delta ?S",
+			"\\\\frac|dQ|Q"
+		]
+	},
+	{
+		"file": "f2-firstlaw.m4a",
+		"subject": "Física 2",
+		"language": "es",
+		"dictated": "la primera ley de la termodinámica es delta u igual cu menos doble ve",
+		"mustMatch": [
+			"\\\\Delta ?U ?= ?Q ?- ?W|\\\\Delta ?U|Delta U"
+		]
 	},
 	{
 		"file": "en-integral.m4a",
+		"subject": "English",
 		"language": "en",
 		"dictated": "the integral from a to b of f of x d x",
-		"mustMatch": ["\\\\int_a\\^b", "f\\(x\\)", "d\\s?x"]
+		"mustMatch": [
+			"\\\\int_a\\^b",
+			"f\\(x\\)",
+			"d\\s?x"
+		]
 	},
 	{
 		"file": "en-sum.m4a",
+		"subject": "English",
 		"language": "en",
 		"dictated": "the sum from i equals one to n of i squared",
-		"mustMatch": ["\\\\sum_\\{i=1\\}", "\\^\\{?n\\}?", "i\\^2"]
+		"mustMatch": [
+			"\\\\sum_\\{i=1\\}",
+			"\\^\\{?n\\}?",
+			"i\\^2"
+		]
 	}
 ]
