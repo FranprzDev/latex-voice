@@ -1,0 +1,30 @@
+{
+	"name": "obsidian-latex-voice",
+	"version": "0.1.0",
+	"description": "Dictate math and notes by voice — transcribed and converted to Markdown + LaTeX.",
+	"main": "main.js",
+	"scripts": {
+		"dev": "node esbuild.config.mjs",
+		"build": "node esbuild.config.mjs production",
+		"test": "vitest run test/openai.test.ts test/pipeline.test.ts test/recorder.test.ts test/errors.test.ts test/settings.test.ts test/e2e.test.ts",
+		"test:e2e": "vitest run test/e2e.test.ts",
+		"test:obsidian": "vitest run test/obsidian.e2e.test.ts"
+	},
+	"keywords": [
+		"obsidian",
+		"latex",
+		"voice",
+		"dictation"
+	],
+	"license": "MIT",
+	"devDependencies": {
+		"@types/node": "^26.6.3",
+		"esbuild": "^0.28.2",
+		"obsidian": "latest",
+		"playwright": "^1.63.0",
+		"tslib": "^2.6.0",
+		"typescript": "^7.0.2",
+		"vite": "^8.3.1",
+		"vitest": "^5.0.3"
+	}
+}

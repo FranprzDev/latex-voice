@@ -1,0 +1,32 @@
+[
+	{
+		"file": "integral.m4a",
+		"language": "es",
+		"dictated": "integral de a a b de efe de equis de equis",
+		"mustMatch": ["\\\\int_a\\^b", "f\\(x\\)", "d\\s?x"]
+	},
+	{
+		"file": "sum.m4a",
+		"language": "es",
+		"dictated": "la sumatoria de i igual a uno hasta n de i al cuadrado",
+		"mustMatch": ["\\\\sum_\\{i=1\\}", "\\^\\{?n\\}?", "i\\^2"]
+	},
+	{
+		"file": "quadratic.m4a",
+		"language": "es",
+		"dictated": "x igual a menos b más o menos raíz cuadrada de b al cuadrado menos cuatro a c sobre dos a",
+		"mustMatch": ["\\\\frac", "\\\\sqrt", "\\\\pm", "b\\^2"]
+	},
+	{
+		"file": "en-integral.m4a",
+		"language": "en",
+		"dictated": "the integral from a to b of f of x d x",
+		"mustMatch": ["\\\\int_a\\^b", "f\\(x\\)", "d\\s?x"]
+	},
+	{
+		"file": "en-sum.m4a",
+		"language": "en",
+		"dictated": "the sum from i equals one to n of i squared",
+		"mustMatch": ["\\\\sum_\\{i=1\\}", "\\^\\{?n\\}?", "i\\^2"]
+	}
+]

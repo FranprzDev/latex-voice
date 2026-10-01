@@ -1,0 +1,9 @@
+{
+	"id": "latex-voice",
+	"name": "LaTeX Voice",
+	"version": "0.1.0",
+	"minAppVersion": "1.5.0",
+	"description": "Dictate math and notes by voice — transcribed and converted to Markdown + LaTeX.",
+	"author": "franciscoperez",
+	"isDesktopOnly": false
+}
