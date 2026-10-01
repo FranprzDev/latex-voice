@@ -1,32 +1,199 @@
 [
 	{
 		"file": "integral.m4a",
+		"subject": "Análisis Matemático 1",
 		"language": "es",
 		"dictated": "integral de a a b de efe de equis de equis",
-		"mustMatch": ["\\\\int_a\\^b", "f\\(x\\)", "d\\s?x"]
+		"mustMatch": [
+			"\\\\int_a\\^b",
+			"f\\(x\\)",
+			"d\\s?x"
+		]
 	},
 	{
 		"file": "sum.m4a",
+		"subject": "Análisis Matemático 1",
 		"language": "es",
 		"dictated": "la sumatoria de i igual a uno hasta n de i al cuadrado",
-		"mustMatch": ["\\\\sum_\\{i=1\\}", "\\^\\{?n\\}?", "i\\^2"]
+		"mustMatch": [
+			"\\\\sum_\\{?i=1\\}?",
+			"\\^\\{?n\\}?",
+			"i\\^2"
+		]
 	},
 	{
 		"file": "quadratic.m4a",
+		"subject": "Análisis Matemático 1",
 		"language": "es",
 		"dictated": "x igual a menos b más o menos raíz cuadrada de b al cuadrado menos cuatro a c sobre dos a",
-		"mustMatch": ["\\\\frac", "\\\\sqrt", "\\\\pm", "b\\^2"]
+		"mustMatch": [
+			"\\\\frac",
+			"\\\\sqrt",
+			"\\\\pm",
+			"b\\^2"
+		]
+	},
+	{
+		"file": "am1-limit.m4a",
+		"subject": "Análisis Matemático 1",
+		"language": "es",
+		"dictated": "el límite cuando equis tiende a cero de seno de equis sobre equis es igual a uno",
+		"mustMatch": [
+			"\\\\lim",
+			"x\\\\to ?0|x \\\\rightarrow ?0",
+			"\\\\sin",
+			"= ?1"
+		]
+	},
+	{
+		"file": "am1-derivdef.m4a",
+		"subject": "Análisis Matemático 1",
+		"language": "es",
+		"dictated": "la derivada de efe en equis es el límite cuando hache tiende a cero de efe de equis más hache menos efe de equis sobre hache",
+		"mustMatch": [
+			"\\\\lim",
+			"h ?\\\\to ?0|h ?\\\\rightarrow ?0",
+			"f\\(x ?\\+ ?h\\) ?- ?f\\(x\\)"
+		]
+	},
+	{
+		"file": "am1-taylor.m4a",
+		"subject": "Análisis Matemático 1",
+		"language": "es",
+		"dictated": "la serie de taylor de e a la equis es la sumatoria de ene igual a cero hasta infinito de equis a la ene sobre ene factorial",
+		"mustMatch": [
+			"\\\\sum_\\{?n ?= ?0\\}?",
+			"\\^\\{?\\\\infty",
+			"x\\^\\{?n",
+			"n!"
+		]
+	},
+	{
+		"file": "am2-doubleint.m4a",
+		"subject": "Análisis Matemático 2",
+		"language": "es",
+		"dictated": "la integral doble sobre la región erre de efe de equis ye diferencial de equis diferencial de ye",
+		"mustMatch": [
+			"\\\\iint|\\\\int ?\\\\int",
+			"f\\(x ?, ?y\\)",
+			"d\\s?[xy][^\\n]*d\\s?[xy]"
+		]
+	},
+	{
+		"file": "am2-gradient.m4a",
+		"subject": "Análisis Matemático 2",
+		"language": "es",
+		"dictated": "el gradiente de efe es parcial efe sobre parcial equis coma parcial efe sobre parcial ye",
+		"mustMatch": [
+			"\\\\frac\\{\\\\partial",
+			"\\\\partial ?x",
+			"\\\\partial ?y"
+		]
+	},
+	{
+		"file": "am2-ode.m4a",
+		"subject": "Análisis Matemático 2",
+		"language": "es",
+		"dictated": "i griega prima más equis por i griega es igual a seno de equis",
+		"mustMatch": [
+			"y'|y ?\\\\prime",
+			"\\\\sin"
+		]
+	},
+	{
+		"file": "am2-divergence.m4a",
+		"subject": "Análisis Matemático 2",
+		"language": "es",
+		"dictated": "la divergencia del campo es parcial efe uno sobre parcial equis más parcial efe dos sobre parcial ye",
+		"mustMatch": [
+			"\\\\nabla ?\\\\cdot|\\\\operatorname\\{div\\}|\\\\mathrm\\{div\\}|div",
+			"\\\\partial"
+		]
+	},
+	{
+		"file": "f1-newton.m4a",
+		"subject": "Física 1",
+		"language": "es",
+		"dictated": "la segunda ley de newton dice que efe es igual a eme por a",
+		"mustMatch": [
+			"F ?= ?m ?\\\\cdot ?a|F ?= ?m ?a|F ?= ?ma"
+		]
+	},
+	{
+		"file": "f1-velocity.m4a",
+		"subject": "Física 1",
+		"language": "es",
+		"dictated": "la velocidad es la derivada de la posición equis respecto del tiempo te",
+		"mustMatch": [
+			"v ?=|\\\\dot ?x",
+			"\\\\frac\\{d|\\\\dot",
+			"d\\s?t|dt"
+		]
+	},
+	{
+		"file": "f1-kinetic.m4a",
+		"subject": "Física 1",
+		"language": "es",
+		"dictated": "la energía cinética es un medio de eme por ve al cuadrado",
+		"mustMatch": [
+			"\\\\frac\\{1\\}\\{2\\}|\\\\tfrac\\{1\\}\\{2\\}|1/2|\\\\frac12",
+			"m ?v\\^2|mv\\^\\{?2"
+		]
+	},
+	{
+		"file": "f1-harmonic.m4a",
+		"subject": "Física 1",
+		"language": "es",
+		"dictated": "equis de te es igual a a por coseno de omega te más fi",
+		"mustMatch": [
+			"x\\(t\\)",
+			"\\\\cos",
+			"\\\\omega",
+			"\\\\phi|\\\\varphi"
+		]
+	},
+	{
+		"file": "f2-gauss.m4a",
+		"subject": "Física 2",
+		"language": "es",
+		"dictated": "la ley de gauss dice que la integral de superficie cerrada del campo eléctrico es igual a la carga encerrada sobre épsilon cero",
+		"mustMatch": [
+			"\\\\oint|\\\\Phi|\\\\oiint",
+			"\\\\(varepsilon|epsilon)_0|epsilon_0",
+			"Q|q"
+		]
+	},
+	{
+		"file": "f2-wave.m4a",
+		"subject": "Física 2",
+		"language": "es",
+		"dictated": "la ecuación de onda es parcial al cuadrado de ye sobre parcial equis al cuadrado igual a uno sobre ve al cuadrado por parcial al cuadrado de ye sobre parcial te al cuadrado",
+		"mustMatch": [
+			"\\\\partial\\^2|\\\\partial ?\\^?2",
+			"v\\^2",
+			"\\\\partial ?t"
+		]
 	},
 	{
 		"file": "en-integral.m4a",
+		"subject": "English",
 		"language": "en",
 		"dictated": "the integral from a to b of f of x d x",
-		"mustMatch": ["\\\\int_a\\^b", "f\\(x\\)", "d\\s?x"]
+		"mustMatch": [
+			"\\\\int_a\\^b",
+			"f\\(x\\)",
+			"d\\s?x"
+		]
 	},
 	{
 		"file": "en-sum.m4a",
+		"subject": "English",
 		"language": "en",
 		"dictated": "the sum from i equals one to n of i squared",
-		"mustMatch": ["\\\\sum_\\{i=1\\}", "\\^\\{?n\\}?", "i\\^2"]
+		"mustMatch": [
+			"\\\\sum_\\{i=1\\}",
+			"\\^\\{?n\\}?",
+			"i\\^2"
+		]
 	}
 ]

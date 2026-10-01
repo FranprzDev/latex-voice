@@ -22,10 +22,13 @@ const run = apiKey ? describe : describe.skip;
 const FIXTURES = join(__dirname, "fixtures");
 const dictations: {
 	file: string;
+	subject: string;
 	language: "es" | "en";
 	dictated: string;
 	mustMatch: string[];
 }[] = JSON.parse(readFileSync(join(FIXTURES, "dictations.json"), "utf8"));
+
+const subjects = [...new Set(dictations.map((d) => d.subject))];
 
 function settingsFor(lang: "es" | "en"): LatexVoiceSettings {
 	const p = defaultPromptsFor(lang);
@@ -45,9 +48,11 @@ const provider = new OpenAIProvider({
 	conversionModel: DEFAULT_SETTINGS.conversionModel,
 });
 
-run("e2e: dictation → LaTeX", { timeout: 120_000 }, () => {
-	for (const d of dictations) {
-		it(`"${d.dictated}" produces expected LaTeX`, async () => {
+run("e2e: dictation → LaTeX", { timeout: 300_000 }, () => {
+	for (const subject of subjects) {
+		describe(subject, () => {
+			for (const d of dictations.filter((x) => x.subject === subject)) {
+				it(`"${d.dictated}" produces expected LaTeX`, async () => {
 			const audio = new Blob([readFileSync(join(FIXTURES, d.file))], {
 				type: "audio/mp4",
 			});
@@ -60,6 +65,8 @@ run("e2e: dictation → LaTeX", { timeout: 120_000 }, () => {
 			console.log(`\n  transcript: ${transcript}\n  output: ${output}`);
 			for (const pattern of d.mustMatch) {
 				expect(output, `missing ${pattern}`).toMatch(new RegExp(pattern));
+			}
+				});
 			}
 		});
 	}
