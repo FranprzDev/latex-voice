@@ -87,7 +87,7 @@ export const DEFAULT_SETTINGS: LatexVoiceSettings = {
 	openaiApiKey: "",
 	openaiBaseUrl: "https://api.openai.com/v1",
 	transcriptionModel: "gpt-transcribe",
-	conversionModel: "gpt-4o-mini",
+	conversionModel: "gpt-6-luna",
 	language: "es",
 	transcriptionContext: DEFAULT_TRANSCRIPTION_CONTEXT_ES,
 	conversionPrompt: DEFAULT_CONVERSION_PROMPT_ES,

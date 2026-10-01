@@ -5,7 +5,7 @@ const provider = new OpenAIProvider({
 	apiKey: "sk-test",
 	baseUrl: "https://api.openai.com/v1",
 	transcriptionModel: "gpt-transcribe",
-	conversionModel: "gpt-4o-mini",
+	conversionModel: "gpt-6-luna",
 });
 
 function mockFetchOnce(body: unknown, ok = true, status = 200) {
@@ -69,7 +69,7 @@ describe("OpenAIProvider.convertToLatex", () => {
 		expect(out.outputTokens).toBe(20);
 		const init = vi.mocked(fetch).mock.calls[0][1];
 		const body = JSON.parse(init.body as string);
-		expect(body.model).toBe("gpt-4o-mini");
+		expect(body.model).toBe("gpt-6-luna");
 		expect(body.messages[0]).toEqual({ role: "system", content: "convert" });
 		expect(body.messages[1].role).toBe("user");
 	});
