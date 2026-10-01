@@ -114,7 +114,15 @@ export default class LatexVoicePlugin extends Plugin {
 					);
 					await this.recordUsage(usage);
 					const view = this.app.workspace.getActiveViewOfType(MarkdownView);
-					if (view) view.editor.replaceSelection(output + "\n");
+					if (view) {
+						const cursor = view.editor.getCursor();
+						const text = output + "\n";
+						view.editor.replaceRange(text, cursor);
+						view.editor.setCursor({
+							line: cursor.line + text.split("\n").length - 1,
+							ch: 0,
+						});
+					}
 					if (this.settings.saveAudio) {
 						await this.saveAudioFile(blob, "webm");
 					}

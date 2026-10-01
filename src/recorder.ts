@@ -72,8 +72,8 @@ export class AudioRecorder {
 	 * aborts. Returns null if nothing was heard before graceMs.
 	 */
 	async capturePhrase(opts: CaptureOptions = {}): Promise<Blob | null> {
-		const silenceMs = opts.silenceMs ?? 1600;
-		const maxMs = opts.maxMs ?? 20_000;
+		const silenceMs = opts.silenceMs ?? 2800;
+		const maxMs = opts.maxMs ?? 60_000;
 		const graceMs = opts.graceMs ?? 10_000;
 
 		await this.start();

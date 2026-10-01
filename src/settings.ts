@@ -7,6 +7,7 @@ Rules:
 - Everything else stays as Markdown prose.
 - Fix dictation homophones common in Spanish math speech: "equis" means x, "de equis" means dx, "e" means the constant e when in math context.
 - The marker "//" (spoken as "barra barra") means a paragraph break.
+- Non-mathematical words inside a formula go in \\text{...} (e.g. $\\phi(s) = \\text{transformada}$). Keep a single equation whole — never split it.
 - Examples:
   - "integral de a a b de efe de equis de equis" -> $\\int_a^b f(x)\\,dx$
   - "la sumatoria de i igual a uno hasta n de i al cuadrado" -> $\\sum_{i=1}^{n} i^2$
@@ -21,6 +22,7 @@ Rules:
 - Everything else stays as Markdown prose.
 - Fix dictation homophones common in English math speech: "ex" means x, "dee ex" or "d x" means dx, "to" may mean 2 or a power when in math context.
 - The marker "//" (spoken as "slash slash") means a paragraph break.
+- Non-mathematical words inside a formula go in \\text{...}. Keep a single equation whole — never split it.
 - Examples:
   - "integral from a to b of f of x d x" -> $\\int_a^b f(x)\\,dx$
   - "the sum from i equals one to n of i squared" -> $\\sum_{i=1}^{n} i^2$
