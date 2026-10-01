@@ -20,6 +20,7 @@ export async function dictatePipeline(
 	audio: Blob,
 	filename: string,
 	settings: LatexVoiceSettings,
+	audioSeconds?: number,
 ): Promise<PipelineResult> {
 	const t = await provider.transcribe(audio, filename, {
 		language: settings.language,
@@ -32,7 +33,7 @@ export async function dictatePipeline(
 		transcript: t.text,
 		output: c.text,
 		usage: {
-			audioSeconds: t.durationSeconds,
+			audioSeconds: t.durationSeconds ?? audioSeconds,
 			inputTokens: c.inputTokens,
 			outputTokens: c.outputTokens,
 		},

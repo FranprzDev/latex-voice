@@ -107,7 +107,13 @@ export default class LatexVoicePlugin extends Plugin {
 			const ext = audio.type.includes("webm") ? "webm" : "m4a";
 
 			this.updateStatus("transcribing…");
-			const { output, usage } = await dictatePipeline(provider, audio, `dictation.${ext}`, this.settings);
+			const { output, usage } = await dictatePipeline(
+				provider,
+				audio,
+				`dictation.${ext}`,
+				this.settings,
+				this.recorder.lastDurationSeconds,
+			);
 			await this.recordUsage(usage);
 
 			view.editor.replaceSelection(output);

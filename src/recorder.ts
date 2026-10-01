@@ -2,6 +2,10 @@ export class AudioRecorder {
 	private recorder: MediaRecorder | null = null;
 	private stream: MediaStream | null = null;
 	private chunks: Blob[] = [];
+	private startedAt = 0;
+
+	/** Seconds recorded in the last session. */
+	lastDurationSeconds = 0;
 
 	get isRecording(): boolean {
 		return this.recorder?.state === "recording";
@@ -23,6 +27,7 @@ export class AudioRecorder {
 			this.recorder.ondataavailable = (e) => {
 				if (e.data.size > 0) this.chunks.push(e.data);
 			};
+			this.startedAt = Date.now();
 			this.recorder.start();
 		} catch (e) {
 			this.release();
@@ -39,6 +44,7 @@ export class AudioRecorder {
 			}
 			recorder.onstop = () => {
 				const blob = new Blob(this.chunks, { type: this.mimeType });
+				this.lastDurationSeconds = (Date.now() - this.startedAt) / 1000;
 				this.release();
 				resolve(blob);
 			};

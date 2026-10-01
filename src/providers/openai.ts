@@ -46,7 +46,6 @@ export class OpenAIProvider implements VoiceProvider {
 		const form = new FormData();
 		form.append("file", audio, filename);
 		form.append("model", this.config.transcriptionModel);
-		form.append("response_format", "verbose_json");
 		if (opts.language && opts.language !== "auto") {
 			form.append("language", opts.language);
 		}
@@ -74,7 +73,6 @@ export class OpenAIProvider implements VoiceProvider {
 			headers: this.headers({ "Content-Type": "application/json" }),
 			body: JSON.stringify({
 				model: this.config.conversionModel,
-				temperature: 0,
 				messages: [
 					{ role: "system", content: opts.systemPrompt },
 					{ role: "user", content: transcript },
