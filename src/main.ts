@@ -35,10 +35,18 @@ export default class LatexVoicePlugin extends Plugin {
 		this.addCommand({
 			id: "toggle-dictation",
 			name: "Start/stop voice dictation",
+			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "M" }],
 			callback: () => void this.toggleDictation(),
 		});
 
 		this.addSettingTab(new LatexVoiceSettingTab(this.app, this));
+
+		if (!this.settings.openaiApiKey && !this.settings.testAudioPath) {
+			new Notice(
+				"LaTeX Voice: pegá tu OpenAI API key en Settings → LaTeX Voice para empezar.",
+				8000,
+			);
+		}
 	}
 
 	onunload() {
@@ -155,9 +163,13 @@ class LatexVoiceSettingTab extends PluginSettingTab {
 		containerEl.empty();
 		const s = this.plugin.settings;
 
+		containerEl.createEl("p", {
+			text: "BYOK: bring your own OpenAI API key — that's the only requirement.",
+		});
+
 		const apiKeySetting = new Setting(containerEl)
 			.setName("OpenAI API key")
-			.setDesc("Used for transcription and LaTeX conversion.")
+			.setDesc("Required. Get one at platform.openai.com → API keys.")
 			.addText((t) =>
 				t.setPlaceholder("sk-...")
 					.setValue(s.openaiApiKey)
