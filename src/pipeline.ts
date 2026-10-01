@@ -26,6 +26,10 @@ export async function dictatePipeline(
 		language: settings.language,
 		contextPrompt: settings.transcriptionContext,
 	});
+	if (!t.text.trim()) {
+		throw new Error("empty transcript");
+	}
+	console.log("[latex-voice] transcript:", t.text);
 	const c = await provider.convertToLatex(t.text, {
 		systemPrompt: settings.conversionPrompt,
 	});

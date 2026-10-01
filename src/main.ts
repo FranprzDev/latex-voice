@@ -41,7 +41,7 @@ export default class LatexVoicePlugin extends Plugin {
 
 		this.addSettingTab(new LatexVoiceSettingTab(this.app, this));
 
-		if (!this.settings.openaiApiKey && !this.settings.testAudioPath) {
+		if (!this.settings.openaiApiKey && !this.settings.devMode) {
 			new Notice(
 				"LaTeX Voice: pegá tu OpenAI API key en Settings → LaTeX Voice para empezar.",
 				8000,
@@ -66,7 +66,7 @@ export default class LatexVoicePlugin extends Plugin {
 	}
 
 	private async toggleDictation() {
-		if (this.settings.testAudioPath) {
+		if (this.settings.devMode && this.settings.testAudioPath) {
 			await this.dictateFromFile(this.settings.testAudioPath);
 			return;
 		}
@@ -105,6 +105,10 @@ export default class LatexVoicePlugin extends Plugin {
 		try {
 			const provider = createProvider(this.settings);
 			const ext = audio.type.includes("webm") ? "webm" : "m4a";
+			console.log(`[latex-voice] audio blob: ${audio.size} bytes, type=${audio.type}`);
+			if (audio.size < 1000) {
+				throw new Error("empty transcript");
+			}
 
 			this.updateStatus("transcribing…");
 			const { output, usage } = await dictatePipeline(

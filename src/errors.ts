@@ -21,6 +21,8 @@ export function friendlyError(e: unknown): string {
 		return "No hay grabación activa.";
 	if (lower.includes("no active") || lower.includes("markdown"))
 		return "Abrí una nota antes de dictar.";
+	if (lower.includes("empty transcript"))
+		return "No detecté voz. Revisá que el micrófono funcione y el permiso esté dado.";
 
 	// fallback: first line, trimmed
 	return msg.split("\n")[0].slice(0, 120);

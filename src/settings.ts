@@ -78,7 +78,8 @@ export interface LatexVoiceSettings {
 		outputTokens: number;
 		requests: number;
 	};
-	/** E2E only: when set, dictation reads this vault file instead of the mic. */
+	/** E2E only. Requires devMode=true AND testAudioPath set — otherwise ignored. */
+	devMode?: boolean;
 	testAudioPath?: string;
 }
 

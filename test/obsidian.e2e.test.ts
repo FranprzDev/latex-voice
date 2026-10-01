@@ -59,22 +59,39 @@ describe("obsidian e2e", () => {
 				resolve(VAULT, "integral.m4a"),
 			);
 
-		const data: Record<string, string> = {
-			testAudioPath: "integral.m4a",
-			language: "es",
-		};
-		if (API_KEY) data.openaiApiKey = API_KEY;
+		// merge into existing data.json (keep user's API key etc.), mark devMode
+		const dataPath = resolve(PLUGIN_DIR, "data.json");
+		const existing = existsSync(dataPath)
+			? JSON.parse(readFileSync(dataPath, "utf8"))
+			: {};
 		writeFileSync(
-			resolve(PLUGIN_DIR, "data.json"),
-			JSON.stringify(data, null, 2),
+			dataPath,
+			JSON.stringify(
+				{
+					...existing,
+					devMode: true,
+					testAudioPath: "integral.m4a",
+					language: "es",
+					...(API_KEY ? { openaiApiKey: API_KEY } : {}),
+				},
+				null,
+				2,
+			),
 		);
 
 		// Obsidian must not already be running (single-instance forwarding
-		// would ignore our launch args). Kill leftover debug instances.
+		// would ignore our launch args). Kill leftover debug instances and
+		// fail fast if the user's own Obsidian is open.
 		try {
 			execSync("pkill -f 'remote-debugging-port=9222' || true");
 			await sleep(2000);
 		} catch { /* none running */ }
+		const running = execSync("pgrep -x Obsidian || true").toString();
+		if (running.trim()) {
+			throw new Error(
+				"Obsidian is running — close it first (the e2e needs its own debug instance).",
+			);
+		}
 
 		// register dev-vault so Obsidian opens it at launch
 		const cfg = JSON.parse(readFileSync(OBSIDIAN_CFG, "utf8"));
@@ -144,6 +161,15 @@ describe("obsidian e2e", () => {
 	afterAll(async () => {
 		await browser?.close().catch(() => undefined);
 		obs?.kill();
+		// restore data.json to production state — devMode/testAudioPath are
+		// test-only and must never leak into manual use of this vault
+		try {
+			const dataPath = resolve(PLUGIN_DIR, "data.json");
+			const d = JSON.parse(readFileSync(dataPath, "utf8"));
+			delete d.devMode;
+			delete d.testAudioPath;
+			writeFileSync(dataPath, JSON.stringify(d, null, 2));
+		} catch { /* best effort */ }
 		try {
 			const cfg = JSON.parse(readFileSync(OBSIDIAN_CFG, "utf8"));
 			if (cfg.vaults?.[VAULT_ID]) cfg.vaults[VAULT_ID].open = false;
