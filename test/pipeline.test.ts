@@ -9,17 +9,17 @@ const fakeProvider: VoiceProvider = {
 	async transcribe(_audio, filename, opts) {
 		expect(opts.language).toBe("es");
 		expect(opts.contextPrompt).toContain("integral");
-		return `transcribed ${filename}`;
+		return { text: `transcribed ${filename}`, durationSeconds: 2.5 };
 	},
 	async convertToLatex(transcript, opts) {
 		expect(opts.systemPrompt).toBe(DEFAULT_SETTINGS.conversionPrompt);
-		return `converted: ${transcript}`;
+		return { text: `converted: ${transcript}`, inputTokens: 10, outputTokens: 5 };
 	},
 };
 
 describe("dictatePipeline", () => {
 	it("chains transcribe → convertToLatex and returns both", async () => {
-		const { transcript, output } = await dictatePipeline(
+		const { transcript, output, usage } = await dictatePipeline(
 			fakeProvider,
 			new Blob(["a"]),
 			"d.m4a",
@@ -27,6 +27,7 @@ describe("dictatePipeline", () => {
 		);
 		expect(transcript).toBe("transcribed d.m4a");
 		expect(output).toBe("converted: transcribed d.m4a");
+		expect(usage).toEqual({ audioSeconds: 2.5, inputTokens: 10, outputTokens: 5 });
 	});
 
 	it("propagates transcription errors", async () => {

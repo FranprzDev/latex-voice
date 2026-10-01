@@ -1,4 +1,10 @@
-import { ConvertOptions, TranscribeOptions, VoiceProvider } from "./provider";
+import {
+	ConvertOptions,
+	ConvertResult,
+	TranscribeOptions,
+	TranscriptionResult,
+	VoiceProvider,
+} from "./provider";
 
 export interface OpenAIProviderConfig {
 	apiKey: string;
@@ -9,11 +15,13 @@ export interface OpenAIProviderConfig {
 
 interface TranscriptionResponse {
 	text?: string;
+	duration?: number;
 	error?: { message?: string };
 }
 
 interface ChatResponse {
 	choices?: { message?: { content?: string } }[];
+	usage?: { prompt_tokens?: number; completion_tokens?: number };
 	error?: { message?: string };
 }
 
@@ -34,10 +42,11 @@ export class OpenAIProvider implements VoiceProvider {
 		};
 	}
 
-	async transcribe(audio: Blob, filename: string, opts: TranscribeOptions): Promise<string> {
+	async transcribe(audio: Blob, filename: string, opts: TranscribeOptions): Promise<TranscriptionResult> {
 		const form = new FormData();
 		form.append("file", audio, filename);
 		form.append("model", this.config.transcriptionModel);
+		form.append("response_format", "verbose_json");
 		if (opts.language && opts.language !== "auto") {
 			form.append("language", opts.language);
 		}
@@ -56,10 +65,10 @@ export class OpenAIProvider implements VoiceProvider {
 		if (!res.ok || !data.text) {
 			throw new Error(`${data.error?.message ?? "Transcription failed"} (HTTP ${res.status})`);
 		}
-		return data.text;
+		return { text: data.text, durationSeconds: data.duration };
 	}
 
-	async convertToLatex(transcript: string, opts: ConvertOptions): Promise<string> {
+	async convertToLatex(transcript: string, opts: ConvertOptions): Promise<ConvertResult> {
 		const res = await fetch(`${this.url}/chat/completions`, {
 			method: "POST",
 			headers: this.headers({ "Content-Type": "application/json" }),
@@ -79,6 +88,10 @@ export class OpenAIProvider implements VoiceProvider {
 		if (!res.ok || !content) {
 			throw new Error(`${data.error?.message ?? "Conversion failed"} (HTTP ${res.status})`);
 		}
-		return content.trim();
+		return {
+			text: content.trim(),
+			inputTokens: data.usage?.prompt_tokens,
+			outputTokens: data.usage?.completion_tokens,
+		};
 	}
 }

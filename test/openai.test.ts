@@ -23,13 +23,14 @@ afterEach(() => vi.unstubAllGlobals());
 
 describe("OpenAIProvider.transcribe", () => {
 	it("posts multipart form to /audio/transcriptions and returns text", async () => {
-		mockFetchOnce({ text: "integral de a a b" });
+		mockFetchOnce({ text: "integral de a a b", duration: 3.2 });
 		const blob = new Blob(["fake-audio"], { type: "audio/mp4" });
 		const out = await provider.transcribe(blob, "d.m4a", {
 			language: "es",
 			contextPrompt: "math",
 		});
-		expect(out).toBe("integral de a a b");
+		expect(out.text).toBe("integral de a a b");
+		expect(out.durationSeconds).toBe(3.2);
 		const [url, init] = vi.mocked(fetch).mock.calls[0];
 		expect(url).toBe("https://api.openai.com/v1/audio/transcriptions");
 		expect(init.method).toBe("POST");
@@ -58,11 +59,14 @@ describe("OpenAIProvider.convertToLatex", () => {
 	it("sends system prompt + transcript and returns trimmed content", async () => {
 		mockFetchOnce({
 			choices: [{ message: { content: "  $\\int_a^b f(x)$  " } }],
+			usage: { prompt_tokens: 100, completion_tokens: 20 },
 		});
 		const out = await provider.convertToLatex("integral de a a b", {
 			systemPrompt: "convert",
 		});
-		expect(out).toBe("$\\int_a^b f(x)$");
+		expect(out.text).toBe("$\\int_a^b f(x)$");
+		expect(out.inputTokens).toBe(100);
+		expect(out.outputTokens).toBe(20);
 		const init = vi.mocked(fetch).mock.calls[0][1];
 		const body = JSON.parse(init.body as string);
 		expect(body.model).toBe("gpt-4o-mini");

@@ -72,6 +72,12 @@ export interface LatexVoiceSettings {
 	conversionPrompt: string;
 	saveAudio: boolean;
 	audioFolder: string;
+	usage: {
+		audioSeconds: number;
+		inputTokens: number;
+		outputTokens: number;
+		requests: number;
+	};
 	/** E2E only: when set, dictation reads this vault file instead of the mic. */
 	testAudioPath?: string;
 }
@@ -87,4 +93,5 @@ export const DEFAULT_SETTINGS: LatexVoiceSettings = {
 	conversionPrompt: DEFAULT_CONVERSION_PROMPT_ES,
 	saveAudio: false,
 	audioFolder: "recordings",
+	usage: { audioSeconds: 0, inputTokens: 0, outputTokens: 0, requests: 0 },
 };

@@ -107,7 +107,8 @@ export default class LatexVoicePlugin extends Plugin {
 			const ext = audio.type.includes("webm") ? "webm" : "m4a";
 
 			this.updateStatus("transcribing…");
-			const { output } = await dictatePipeline(provider, audio, `dictation.${ext}`, this.settings);
+			const { output, usage } = await dictatePipeline(provider, audio, `dictation.${ext}`, this.settings);
+			await this.recordUsage(usage);
 
 			view.editor.replaceSelection(output);
 			if (this.settings.saveAudio) {
@@ -132,7 +133,8 @@ export default class LatexVoicePlugin extends Plugin {
 			const buffer = await this.app.vault.adapter.readBinary(path);
 			const audio = new Blob([buffer]);
 			const provider = createProvider(this.settings);
-			const { output } = await dictatePipeline(provider, audio, path, this.settings);
+			const { output, usage } = await dictatePipeline(provider, audio, path, this.settings);
+			await this.recordUsage(usage);
 			view.editor.replaceSelection(output);
 			new Notice("LaTeX Voice: listo (audio de prueba).");
 		} catch (e) {
@@ -140,6 +142,15 @@ export default class LatexVoicePlugin extends Plugin {
 		} finally {
 			this.updateStatus("");
 		}
+	}
+
+	async recordUsage(u: { audioSeconds?: number; inputTokens?: number; outputTokens?: number }) {
+		const usage = this.settings.usage;
+		usage.audioSeconds += u.audioSeconds ?? 0;
+		usage.inputTokens += u.inputTokens ?? 0;
+		usage.outputTokens += u.outputTokens ?? 0;
+		usage.requests += 1;
+		await this.saveSettings();
 	}
 
 	private async saveAudioFile(audio: Blob, ext: string) {
@@ -268,6 +279,21 @@ class LatexVoiceSettingTab extends PluginSettingTab {
 				t.setValue(s.audioFolder).onChange(async (v) => {
 					s.audioFolder = v.trim();
 					await this.plugin.saveSettings();
+				})
+			);
+
+		const u = s.usage;
+		new Setting(containerEl)
+			.setName("Usage")
+			.setDesc(
+				`${u.requests} dictations · ${Math.round(u.audioSeconds)}s audio · ` +
+					`${u.inputTokens + u.outputTokens} tokens`,
+			)
+			.addButton((b) =>
+				b.setButtonText("Reset").onClick(async () => {
+					s.usage = { audioSeconds: 0, inputTokens: 0, outputTokens: 0, requests: 0 };
+					await this.plugin.saveSettings();
+					this.display();
 				})
 			);
 	}
