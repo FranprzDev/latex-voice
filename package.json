@@ -1,6 +1,6 @@
 {
 	"name": "vibe-latex",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"description": "Dictate math and notes by voice — transcribed and converted to Markdown + LaTeX.",
 	"main": "main.js",
 	"scripts": {

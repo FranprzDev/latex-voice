@@ -26,7 +26,7 @@ import { homedir } from "os";
 
 const ROOT = resolve(__dirname, "..");
 const VAULT = resolve(ROOT, "dev-vault");
-const PLUGIN_DIR = resolve(VAULT, ".obsidian/plugins/vibe-latex");
+const PLUGIN_DIR = resolve(VAULT, ".obsidian/plugins/latex-voice");
 const OBSIDIAN_BIN = "/Applications/Obsidian.app/Contents/MacOS/Obsidian";
 const API_KEY = process.env.OPENAI_API_KEY;
 const CDP_PORT = 9222;
@@ -49,7 +49,7 @@ describe("obsidian e2e", () => {
 		cpSync(resolve(ROOT, "manifest.json"), resolve(PLUGIN_DIR, "manifest.json"));
 		writeFileSync(
 			resolve(VAULT, ".obsidian/community-plugins.json"),
-			'["vibe-latex"]',
+			'["latex-voice"]',
 		);
 		if (!existsSync(resolve(VAULT, "note.md")))
 			writeFileSync(resolve(VAULT, "note.md"), "# Test Note\n\nDictated: \n");
@@ -136,11 +136,11 @@ describe("obsidian e2e", () => {
 			const obs = (window as any).app;
 			const out: Record<string, unknown> = {};
 			out.hasApp = !!obs;
-			out.pluginLoaded = !!obs?.plugins?.plugins?.["vibe-latex"];
+			out.pluginLoaded = !!obs?.plugins?.plugins?.["latex-voice"];
 			out.commandRegistered =
-				!!obs?.commands?.commands?.["vibe-latex:toggle-dictation"];
+				!!obs?.commands?.commands?.["latex-voice:toggle-dictation"];
 			out.communityEnabled =
-				obs?.plugins?.enabledPlugins?.has?.("vibe-latex") ?? false;
+				obs?.plugins?.enabledPlugins?.has?.("latex-voice") ?? false;
 
 			const file = obs.vault.getAbstractFileByPath("note.md");
 			if (file) {
@@ -150,7 +150,7 @@ describe("obsidian e2e", () => {
 			out.noteOpened = obs.workspace.getActiveFile()?.path === "note.md";
 
 			if (out.commandRegistered) {
-				obs.commands.executeCommandById("vibe-latex:toggle-dictation");
+				obs.commands.executeCommandById("latex-voice:toggle-dictation");
 				await new Promise((r) => setTimeout(r, 30_000));
 				out.fileContent = file ? await obs.vault.read(file) : "";
 			}

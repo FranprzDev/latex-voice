@@ -6,7 +6,7 @@ set -euo pipefail
 
 VAULT="${1:?Usage: ./install.sh /path/to/obsidian/vault}"
 SRC="$(cd "$(dirname "$0")" && pwd)"
-DEST="$VAULT/.obsidian/plugins/vibe-latex"
+DEST="$VAULT/.obsidian/plugins/latex-voice"
 
 [ -f "$SRC/main.js" ] || { echo "Run npm run build first"; exit 1; }
 [ -d "$VAULT" ] || { echo "Vault not found: $VAULT"; exit 1; }
@@ -22,12 +22,12 @@ if [ -f "$CP" ]; then
 import json, sys
 p = sys.argv[1]
 data = json.load(open(p))
-if "vibe-latex" not in data:
-    data.append("vibe-latex")
+if "latex-voice" not in data:
+    data.append("latex-voice")
 json.dump(data, open(p, "w"), indent=2)
 PY
 else
-	echo '["vibe-latex"]' > "$CP"
+	echo '["latex-voice"]' > "$CP"
 fi
 
 echo "Installed and enabled in: $VAULT"
