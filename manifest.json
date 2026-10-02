@@ -1,9 +1,9 @@
 {
-	"id": "latex-voice",
-	"name": "LaTeX Voice",
-	"version": "0.1.0",
+	"id": "vibe-latex",
+	"name": "Vibe LaTeX",
+	"version": "0.1.1",
 	"minAppVersion": "1.5.0",
-	"description": "Dictate math and notes by voice — transcribed and converted to Markdown + LaTeX.",
+	"description": "Dictate math and notes by voice \u2014 transcribed and converted to Markdown + LaTeX.",
 	"author": "franciscoperez",
 	"isDesktopOnly": false
 }

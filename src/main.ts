@@ -29,7 +29,7 @@ export default class LatexVoicePlugin extends Plugin {
 		this.statusBarEl = this.addStatusBarItem();
 		this.updateStatus("");
 
-		this.addRibbonIcon("mic", "LaTeX Voice: toggle dictation", () => {
+		this.addRibbonIcon("mic", "Vibe LaTeX: toggle dictation", () => {
 			void this.toggleDictation();
 		});
 
@@ -44,7 +44,7 @@ export default class LatexVoicePlugin extends Plugin {
 
 		if (!this.settings.openaiApiKey && !this.settings.devMode) {
 			new Notice(
-				"LaTeX Voice: pegá tu OpenAI API key en Settings → LaTeX Voice para empezar.",
+				"Vibe LaTeX: pegá tu OpenAI API key en Settings → Vibe LaTeX para empezar.",
 				8000,
 			);
 		}
@@ -64,7 +64,7 @@ export default class LatexVoicePlugin extends Plugin {
 	}
 
 	private updateStatus(text: string) {
-		this.statusBarEl.setText(text ? `LaTeX Voice: ${text}` : "");
+		this.statusBarEl.setText(text ? `Vibe LaTeX: ${text}` : "");
 	}
 
 	private async toggleDictation() {
@@ -77,11 +77,11 @@ export default class LatexVoicePlugin extends Plugin {
 			return;
 		}
 		if (!this.settings.openaiApiKey) {
-			new Notice("LaTeX Voice: falta la API key (Settings → LaTeX Voice).");
+			new Notice("Vibe LaTeX: falta la API key (Settings → Vibe LaTeX).");
 			return;
 		}
 		if (!this.app.workspace.getActiveViewOfType(MarkdownView)) {
-			new Notice("LaTeX Voice: abrí una nota antes de dictar.");
+			new Notice("Vibe LaTeX: abrí una nota antes de dictar.");
 			return;
 		}
 		void this.runSession();
@@ -96,7 +96,7 @@ export default class LatexVoicePlugin extends Plugin {
 		const signal = this.sessionAbort.signal;
 		const provider = createProvider(this.settings);
 		this.updateStatus("escuchando…");
-		new Notice("LaTeX Voice: escuchando. Volvé a correr el comando para terminar.");
+		new Notice("Vibe LaTeX: escuchando. Volvé a correr el comando para terminar.");
 
 		try {
 			while (!signal.aborted) {
@@ -127,23 +127,23 @@ export default class LatexVoicePlugin extends Plugin {
 						await this.saveAudioFile(blob, "webm");
 					}
 				} catch (e) {
-					new Notice(`LaTeX Voice: ${friendlyError(e)}`);
+					new Notice(`Vibe LaTeX: ${friendlyError(e)}`);
 				}
 				if (!signal.aborted) this.updateStatus("escuchando…");
 			}
 		} catch (e) {
-			new Notice(`LaTeX Voice: ${friendlyError(e)}`);
+			new Notice(`Vibe LaTeX: ${friendlyError(e)}`);
 		} finally {
 			this.sessionAbort = null;
 			this.updateStatus("");
-			new Notice("LaTeX Voice: dictado terminado.");
+			new Notice("Vibe LaTeX: dictado terminado.");
 		}
 	}
 
 	private async dictateFromFile(path: string) {
 		const view = this.app.workspace.getActiveViewOfType(MarkdownView);
 		if (!view) {
-			new Notice("LaTeX Voice: abrí una nota antes de dictar.");
+			new Notice("Vibe LaTeX: abrí una nota antes de dictar.");
 			return;
 		}
 		try {
@@ -154,9 +154,9 @@ export default class LatexVoicePlugin extends Plugin {
 			const { output, usage } = await dictatePipeline(provider, audio, path, this.settings);
 			await this.recordUsage(usage);
 			view.editor.replaceSelection(output);
-			new Notice("LaTeX Voice: listo (audio de prueba).");
+			new Notice("Vibe LaTeX: listo (audio de prueba).");
 		} catch (e) {
-			new Notice(`LaTeX Voice: ${friendlyError(e)}`);
+			new Notice(`Vibe LaTeX: ${friendlyError(e)}`);
 		} finally {
 			this.updateStatus("");
 		}
