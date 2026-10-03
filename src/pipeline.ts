@@ -23,18 +23,18 @@ export async function dictatePipeline(
 	audioSeconds?: number,
 ): Promise<PipelineResult> {
 	const t = await provider.transcribe(audio, filename, {
-		language: settings.language,
+		language: "es",
 		contextPrompt: settings.transcriptionContext,
 	});
 	if (!t.text.trim()) {
 		throw new Error("empty transcript");
 	}
-	console.log("[vibe-latex] transcript:", t.text);
 	const c = await provider.convertToLatex(t.text, {
 		systemPrompt: settings.conversionPrompt,
 	});
 	// "//" is the spoken paragraph-break marker.
 	const output = c.text.replace(/\s*\/\/\s*/g, "\n\n").trim();
+	if (!output) throw new Error("empty conversion");
 	return {
 		transcript: t.text,
 		output,

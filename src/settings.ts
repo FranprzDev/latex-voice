@@ -1,71 +1,24 @@
-export type DictationLanguage = "es" | "en" | "auto";
+export const DEFAULT_CONVERSION_PROMPT_ES = `Convierte un dictado matemático en español en notas de Obsidian con Markdown y LaTeX.
 
-export const DEFAULT_CONVERSION_PROMPT_ES = `You convert Spanish dictated text into Obsidian Markdown with LaTeX math.
-
-Rules:
-- Mathematical expressions go inside $...$ (inline) or $$...$$ (display).
-- Everything else stays as Markdown prose.
-- Fix dictation homophones common in Spanish math speech: "equis" means x, "de equis" means dx, "e" means the constant e when in math context.
-- The marker "//" (spoken as "barra barra") means a paragraph break.
-- Non-mathematical words inside a formula go in \\text{...} (e.g. $\\phi(s) = \\text{transformada}$). Keep a single equation whole — never split it.
-- Always write described relationships as formulas (e.g. "la velocidad es la derivada de la posición" -> $v = \\frac{dx}{dt}$), not only prose.
-- Spanish letters: "ye" or "i griega" mean y, "hache" means h, "eme" means m, "ene" means n, "te" means t, "efe" means f/F depending on context.
-- Examples:
-  - "integral de a a b de efe de equis de equis" -> $\\int_a^b f(x)\\,dx$
-  - "la sumatoria de i igual a uno hasta n de i al cuadrado" -> $\\sum_{i=1}^{n} i^2$
-  - "raíz cuadrada de dos" -> $\\sqrt{2}$
-  - "alfa más beta" -> $\\alpha + \\beta$
-- Do not add explanations or commentary. Output only the converted Markdown.`;
-
-export const DEFAULT_CONVERSION_PROMPT_EN = `You convert English dictated text into Obsidian Markdown with LaTeX math.
-
-Rules:
-- Mathematical expressions go inside $...$ (inline) or $$...$$ (display).
-- Everything else stays as Markdown prose.
-- Fix dictation homophones common in English math speech: "ex" means x, "dee ex" or "d x" means dx, "to" may mean 2 or a power when in math context.
-- The marker "//" (spoken as "slash slash") means a paragraph break.
-- Non-mathematical words inside a formula go in \\text{...}. Keep a single equation whole — never split it.
-- Always write described relationships as formulas (e.g. "velocity is the derivative of position" -> $v = \\frac{dx}{dt}$), not only prose.
-- Examples:
-  - "integral from a to b of f of x d x" -> $\\int_a^b f(x)\\,dx$
-  - "the sum from i equals one to n of i squared" -> $\\sum_{i=1}^{n} i^2$
-  - "square root of two" -> $\\sqrt{2}$
-  - "alpha plus beta" -> $\\alpha + \\beta$
-- Do not add explanations or commentary. Output only the converted Markdown.`;
+Reglas:
+- Escribe cada expresión matemática en LaTeX entre $...$ o $$...$$. Conserva el texto explicativo en español.
+- Mantén el orden y todos los pasos dictados: igualdades sucesivas, sustituciones, descomposiciones, transformadas, límites y conclusiones. No resumas ni saltes pasos.
+- Separa en líneas distintas las transformaciones matemáticas consecutivas. Conserva conectores como "reemplazando", "aplicando la inversa" y "cuando t tiende a infinito" como texto alrededor de las fórmulas.
+- No resuelvas, completes ni corrijas operaciones que no se hayan dictado. Si un símbolo es ambiguo en la transcripción, conserva la formulación en español en vez de adivinarlo.
+- Interpreta homófonos matemáticos: "equis" como x, "de equis" como dx, "i griega" como y, "hache" como h, "eme" como m, "ene" como n, "te" como t y "efe" como f o F según el contexto.
+- En contexto matemático, distingue "e" constante, "igual" de la letra i y "por" de la letra x.
+- "Barra barra" significa un salto de párrafo. Usa \\text{...} para palabras dentro de una fórmula.
+- Si se dicta un gráfico, conserva su descripción como anotación en español; no inventes ni dibujes un gráfico.
+- Devuelve únicamente el texto convertido, sin explicaciones adicionales.`;
 
 export const DEFAULT_TRANSCRIPTION_CONTEXT_ES =
-	"Spanish math dictation: integral, derivada, sumatoria, raíz cuadrada, fracción, límite, alfa, beta, pi, infinito, subíndice, exponente, al cuadrado, a la n.";
+	"Dictado matemático en español: integral, derivada, sumatoria, raíz, fracción, límite, transformada de Laplace, fracciones parciales, alfa, beta, pi, infinito, subíndice, exponente, al cuadrado, tiende a, inversa, numerador, denominador.";
 
-export const DEFAULT_TRANSCRIPTION_CONTEXT_EN =
-	"English math dictation: integral, derivative, summation, square root, fraction, limit, alpha, beta, pi, infinity, subscript, exponent, squared, to the n.";
-
-const PROMPTS: Record<
-	Exclude<DictationLanguage, "auto">,
-	{ conversion: string; context: string }
-> = {
-	es: {
-		conversion: DEFAULT_CONVERSION_PROMPT_ES,
-		context: DEFAULT_TRANSCRIPTION_CONTEXT_ES,
-	},
-	en: {
-		conversion: DEFAULT_CONVERSION_PROMPT_EN,
-		context: DEFAULT_TRANSCRIPTION_CONTEXT_EN,
-	},
-};
-
-/** Default prompts for a language. "auto" falls back to Spanish. */
-export function defaultPromptsFor(lang: DictationLanguage) {
-	return PROMPTS[lang === "auto" ? "es" : lang];
-}
-
-/** True if the stored prompt/context is still an untouched default. */
-export function isDefaultPrompt(s: LatexVoiceSettings): boolean {
-	return (
-		(s.conversionPrompt === DEFAULT_CONVERSION_PROMPT_ES ||
-			s.conversionPrompt === DEFAULT_CONVERSION_PROMPT_EN) &&
-		(s.transcriptionContext === DEFAULT_TRANSCRIPTION_CONTEXT_ES ||
-			s.transcriptionContext === DEFAULT_TRANSCRIPTION_CONTEXT_EN)
-	);
+export interface LastDictation {
+	filePath: string;
+	from: number;
+	to: number;
+	text: string;
 }
 
 export interface LatexVoiceSettings {
@@ -74,7 +27,6 @@ export interface LatexVoiceSettings {
 	openaiBaseUrl: string;
 	transcriptionModel: string;
 	conversionModel: string;
-	language: DictationLanguage;
 	transcriptionContext: string;
 	conversionPrompt: string;
 	saveAudio: boolean;
@@ -85,6 +37,8 @@ export interface LatexVoiceSettings {
 		outputTokens: number;
 		requests: number;
 	};
+	/** Last inserted phrase, so "Corregir la última frase" survives a reload. */
+	lastDictation?: LastDictation | null;
 	/** E2E only. Requires devMode=true AND testAudioPath set — otherwise ignored. */
 	devMode?: boolean;
 	testAudioPath?: string;
@@ -96,10 +50,66 @@ export const DEFAULT_SETTINGS: LatexVoiceSettings = {
 	openaiBaseUrl: "https://api.openai.com/v1",
 	transcriptionModel: "gpt-transcribe",
 	conversionModel: "gpt-6-luna",
-	language: "es",
 	transcriptionContext: DEFAULT_TRANSCRIPTION_CONTEXT_ES,
 	conversionPrompt: DEFAULT_CONVERSION_PROMPT_ES,
 	saveAudio: false,
 	audioFolder: "recordings",
 	usage: { audioSeconds: 0, inputTokens: 0, outputTokens: 0, requests: 0 },
+	lastDictation: null,
 };
+
+/**
+ * The pre-0.2.0 defaults (per-language prompts) that an untouched user
+ * may still have stored. Anything matching is upgraded to the Spanish
+ * default; custom prompts are left alone.
+ */
+function isLegacyPrompt(value: unknown): boolean {
+	return typeof value === "string" &&
+		(value.startsWith("You convert Spanish dictated text") ||
+			value.startsWith("You convert English dictated text"));
+}
+
+function isLegacyContext(value: unknown): boolean {
+	return typeof value === "string" &&
+		(value.startsWith("Spanish math dictation") ||
+			value.startsWith("English math dictation"));
+}
+
+function isLastDictation(value: unknown): value is LastDictation {
+	if (!value || typeof value !== "object") return false;
+	const v = value as Record<string, unknown>;
+	return typeof v.filePath === "string" &&
+		typeof v.from === "number" &&
+		typeof v.to === "number" &&
+		typeof v.text === "string";
+}
+
+/**
+ * Merges persisted data with defaults, dropping the removed `language`
+ * setting, upgrading legacy default prompts and discarding a malformed
+ * correction target.
+ */
+export function migrateSettings(
+	raw: Record<string, unknown> | null | undefined,
+): LatexVoiceSettings {
+	const data = { ...(raw ?? {}) };
+	delete data.language;
+
+	const settings: LatexVoiceSettings = {
+		...DEFAULT_SETTINGS,
+		...data,
+		usage: {
+			...DEFAULT_SETTINGS.usage,
+			...(typeof data.usage === "object" && data.usage !== null ? data.usage : {}),
+		},
+	};
+
+	if (isLegacyPrompt(settings.conversionPrompt))
+		settings.conversionPrompt = DEFAULT_CONVERSION_PROMPT_ES;
+	if (isLegacyContext(settings.transcriptionContext))
+		settings.transcriptionContext = DEFAULT_TRANSCRIPTION_CONTEXT_ES;
+	if (!isLastDictation(settings.lastDictation))
+		settings.lastDictation = null;
+
+	return settings;
+}

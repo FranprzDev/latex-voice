@@ -40,13 +40,6 @@ describe("OpenAIProvider.transcribe", () => {
 		expect(form.get("prompt")).toBe("math");
 	});
 
-	it("omits language when set to auto", async () => {
-		mockFetchOnce({ text: "hi" });
-		await provider.transcribe(new Blob(["x"]), "d.m4a", { language: "auto" });
-		const form = vi.mocked(fetch).mock.calls[0][1].body as FormData;
-		expect(form.get("language")).toBeNull();
-	});
-
 	it("throws on API error", async () => {
 		mockFetchOnce({ error: { message: "bad key" } }, false, 401);
 		await expect(

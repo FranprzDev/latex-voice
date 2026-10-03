@@ -71,7 +71,6 @@ describe("obsidian e2e", () => {
 					...existing,
 					devMode: true,
 					testAudioPath: "integral.m4a",
-					language: "es",
 					...(API_KEY ? { openaiApiKey: API_KEY } : {}),
 				},
 				null,
@@ -139,6 +138,8 @@ describe("obsidian e2e", () => {
 			out.pluginLoaded = !!obs?.plugins?.plugins?.["vibe-latex"];
 			out.commandRegistered =
 				!!obs?.commands?.commands?.["vibe-latex:toggle-dictation"];
+			out.correctionCommandRegistered =
+				!!obs?.commands?.commands?.["vibe-latex:correct-last-dictation"];
 			out.communityEnabled =
 				obs?.plugins?.enabledPlugins?.has?.("vibe-latex") ?? false;
 
@@ -182,6 +183,9 @@ describe("obsidian e2e", () => {
 	it("community plugin enabled", () =>
 		expect(results.communityEnabled).toBe(true));
 	it("command registered", () => expect(results.commandRegistered).toBe(true));
+	it("correction command registered", () =>
+		expect(results.correctionCommandRegistered).toBe(true),
+	);
 	it("note opened", () => expect(results.noteOpened).toBe(true));
 
 	it(API_KEY ? "inserts LaTeX into the note" : "fails gracefully without key", () => {

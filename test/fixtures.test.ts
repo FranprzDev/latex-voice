@@ -42,7 +42,7 @@ describe("fixtures", () => {
 			for (const p of d.mustMatch) {
 				expect(() => new RegExp(p), `bad regex ${p}`).not.toThrow();
 			}
-			expect(["es", "en"]).toContain(d.language);
+			expect(d.language).toBe("es");
 		});
 	}
 });

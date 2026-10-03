@@ -46,7 +46,7 @@ export class OpenAIProvider implements VoiceProvider {
 		const form = new FormData();
 		form.append("file", audio, filename);
 		form.append("model", this.config.transcriptionModel);
-		if (opts.language && opts.language !== "auto") {
+		if (opts.language) {
 			form.append("language", opts.language);
 		}
 		if (opts.contextPrompt) {
