@@ -51,4 +51,36 @@ describe("dictatePipeline", () => {
 			dictatePipeline(emptyProvider, new Blob(["a"]), "d.m4a", DEFAULT_SETTINGS),
 		).rejects.toThrow("empty conversion");
 	});
+
+	it("forwards the abort signal to both provider calls", async () => {
+		const controller = new AbortController();
+		const seen: Array<AbortSignal | undefined> = [];
+		const p: VoiceProvider = {
+			...fakeProvider,
+			transcribe: async (_audio, _filename, opts) => {
+				seen.push(opts.signal);
+				return { text: "t" };
+			},
+			convertToLatex: async (_transcript, opts) => {
+				seen.push(opts.signal);
+				return { text: "c" };
+			},
+		};
+		await dictatePipeline(p, new Blob(["a"]), "d.m4a", DEFAULT_SETTINGS, {
+			signal: controller.signal,
+		});
+		expect(seen).toEqual([controller.signal, controller.signal]);
+	});
+
+	it("uses opts.audioSeconds when the provider omits a duration", async () => {
+		const p: VoiceProvider = {
+			...fakeProvider,
+			transcribe: async () => ({ text: "t" }),
+			convertToLatex: async () => ({ text: "c" }),
+		};
+		const { usage } = await dictatePipeline(p, new Blob(["a"]), "d.m4a", DEFAULT_SETTINGS, {
+			audioSeconds: 7,
+		});
+		expect(usage.audioSeconds).toBe(7);
+	});
 });

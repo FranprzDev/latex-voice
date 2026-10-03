@@ -31,6 +31,12 @@ export interface LatexVoiceSettings {
 	conversionPrompt: string;
 	saveAudio: boolean;
 	audioFolder: string;
+	/** Silence after speech that ends a phrase, in milliseconds. */
+	silenceMs: number;
+	/** Hard cap for a single phrase, in milliseconds. */
+	maxPhraseMs: number;
+	/** Give up when no speech was heard for this long, in milliseconds. */
+	graceMs: number;
 	usage: {
 		audioSeconds: number;
 		inputTokens: number;
@@ -54,6 +60,9 @@ export const DEFAULT_SETTINGS: LatexVoiceSettings = {
 	conversionPrompt: DEFAULT_CONVERSION_PROMPT_ES,
 	saveAudio: false,
 	audioFolder: "recordings",
+	silenceMs: 2800,
+	maxPhraseMs: 60_000,
+	graceMs: 10_000,
 	usage: { audioSeconds: 0, inputTokens: 0, outputTokens: 0, requests: 0 },
 	lastDictation: null,
 };
@@ -84,6 +93,13 @@ function isLastDictation(value: unknown): value is LastDictation {
 		typeof v.text === "string";
 }
 
+/** Keeps a stored duration within safe bounds, falling back to the default. */
+export function clampDuration(value: unknown, fallback: number, min: number, max: number): number {
+	const n = typeof value === "number" ? value : Number(value);
+	if (!Number.isFinite(n)) return fallback;
+	return Math.min(max, Math.max(min, Math.round(n)));
+}
+
 /**
  * Merges persisted data with defaults, dropping the removed `language`
  * setting, upgrading legacy default prompts and discarding a malformed
@@ -110,6 +126,9 @@ export function migrateSettings(
 		settings.transcriptionContext = DEFAULT_TRANSCRIPTION_CONTEXT_ES;
 	if (!isLastDictation(settings.lastDictation))
 		settings.lastDictation = null;
+	settings.silenceMs = clampDuration(settings.silenceMs, DEFAULT_SETTINGS.silenceMs, 500, 10_000);
+	settings.maxPhraseMs = clampDuration(settings.maxPhraseMs, DEFAULT_SETTINGS.maxPhraseMs, 5_000, 300_000);
+	settings.graceMs = clampDuration(settings.graceMs, DEFAULT_SETTINGS.graceMs, 1_000, 60_000);
 
 	return settings;
 }

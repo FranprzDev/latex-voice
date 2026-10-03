@@ -5,6 +5,7 @@ import {
 	TranscriptionResult,
 	VoiceProvider,
 } from "./provider";
+import { anySignal } from "../abort";
 
 export interface OpenAIProviderConfig {
 	apiKey: string;
@@ -57,7 +58,7 @@ export class OpenAIProvider implements VoiceProvider {
 			method: "POST",
 			headers: this.headers(),
 			body: form,
-			signal: AbortSignal.any([AbortSignal.timeout(60_000), ...(opts.signal ? [opts.signal] : [])]),
+			signal: anySignal([AbortSignal.timeout(60_000), opts.signal]),
 		});
 
 		const data = (await res.json()) as TranscriptionResponse;
@@ -78,7 +79,7 @@ export class OpenAIProvider implements VoiceProvider {
 					{ role: "user", content: transcript },
 				],
 			}),
-			signal: AbortSignal.any([AbortSignal.timeout(60_000), ...(opts.signal ? [opts.signal] : [])]),
+			signal: anySignal([AbortSignal.timeout(60_000), opts.signal]),
 		});
 
 		const data = (await res.json()) as ChatResponse;

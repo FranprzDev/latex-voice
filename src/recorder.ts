@@ -8,6 +8,17 @@ export interface CaptureOptions {
 	graceMs?: number;
 }
 
+/** Maps a recording's mime type to a sane file extension. */
+export function audioExtension(mimeType: string): string {
+	const type = (mimeType || "").toLowerCase();
+	if (type.includes("webm")) return "webm";
+	if (type.includes("mp4") || type.includes("m4a") || type.includes("aac")) return "m4a";
+	if (type.includes("ogg") || type.includes("opus")) return "ogg";
+	if (type.includes("wav")) return "wav";
+	if (type.includes("mpeg") || type.includes("mp3")) return "mp3";
+	return "webm";
+}
+
 export class AudioRecorder {
 	private recorder: MediaRecorder | null = null;
 	private stream: MediaStream | null = null;
