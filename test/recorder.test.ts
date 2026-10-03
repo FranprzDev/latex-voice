@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { AudioRecorder } from "../src/recorder";
+import { AudioRecorder, audioExtension } from "../src/recorder";
 
 /**
  * Leak-focused tests: verify every path releases the MediaStream tracks
@@ -93,5 +93,16 @@ describe("AudioRecorder leak safety", () => {
 	it("stop() when not recording rejects and releases nothing held", async () => {
 		const r = new AudioRecorder();
 		await expect(r.stop()).rejects.toThrow("Not recording");
+	});
+});
+
+describe("audioExtension", () => {
+	it("maps mime types to a file extension", () => {
+		expect(audioExtension("audio/webm;codecs=opus")).toBe("webm");
+		expect(audioExtension("audio/mp4")).toBe("m4a");
+		expect(audioExtension("audio/ogg")).toBe("ogg");
+		expect(audioExtension("audio/wav")).toBe("wav");
+		expect(audioExtension("audio/mpeg")).toBe("mp3");
+		expect(audioExtension("")).toBe("webm");
 	});
 });

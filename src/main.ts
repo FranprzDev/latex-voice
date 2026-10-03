@@ -10,11 +10,17 @@ import {
 	dictationReplacementText,
 	verifiedDictationRange,
 } from "./dictation-range";
-import { AudioRecorder } from "./recorder";
+import { AudioRecorder, audioExtension } from "./recorder";
 import { createProvider } from "./providers";
 import { dictatePipeline } from "./pipeline";
 import { friendlyError } from "./errors";
-import { LatexVoiceSettings, LastDictation, migrateSettings } from "./settings";
+import {
+	clampDuration,
+	DEFAULT_SETTINGS,
+	LatexVoiceSettings,
+	LastDictation,
+	migrateSettings,
+} from "./settings";
 
 export default class LatexVoicePlugin extends Plugin {
 	declare settings: LatexVoiceSettings;
@@ -133,7 +139,12 @@ export default class LatexVoicePlugin extends Plugin {
 
 		try {
 			while (!signal.aborted) {
-				const blob = await this.recorder.capturePhrase({ signal });
+				const blob = await this.recorder.capturePhrase({
+					signal,
+					silenceMs: this.settings.silenceMs,
+					maxMs: this.settings.maxPhraseMs,
+					graceMs: this.settings.graceMs,
+				});
 				if (!blob || blob.size < 800) continue;
 
 				this.updateStatus("procesando…");
@@ -143,7 +154,10 @@ export default class LatexVoicePlugin extends Plugin {
 						blob,
 						`phrase.${blob.type.includes("webm") ? "webm" : "m4a"}`,
 						this.settings,
-						this.recorder.lastDurationSeconds,
+						{
+							audioSeconds: this.recorder.lastDurationSeconds,
+							signal,
+						},
 					);
 					await this.recordUsage(usage);
 					const view = this.app.workspace.getActiveViewOfType(MarkdownView);
@@ -190,7 +204,7 @@ export default class LatexVoicePlugin extends Plugin {
 						}
 					}
 					if (this.settings.saveAudio) {
-						await this.saveAudioFile(blob, "webm");
+						await this.saveAudioFile(blob);
 					}
 				} catch (e) {
 					new Notice(`Vibe LaTeX: ${friendlyError(e)}`);
@@ -238,13 +252,13 @@ export default class LatexVoicePlugin extends Plugin {
 		await this.saveSettings();
 	}
 
-	private async saveAudioFile(audio: Blob, ext: string) {
+	private async saveAudioFile(audio: Blob) {
 		const folder = this.settings.audioFolder;
 		if (!(await this.app.vault.adapter.exists(folder))) {
 			await this.app.vault.createFolder(folder);
 		}
 		const stamp = new Date().toISOString().replace(/[:T]/g, "-").slice(0, 19);
-		const name = `${folder}/${stamp}.${ext}`;
+		const name = `${folder}/${stamp}.${audioExtension(audio.type)}`;
 		await this.app.vault.createBinary(name, await audio.arrayBuffer());
 	}
 }
@@ -346,6 +360,40 @@ class LatexVoiceSettingTab extends PluginSettingTab {
 					await this.plugin.saveSettings();
 				})
 			);
+
+		new Setting(containerEl)
+			.setName("Duración de la pausa (s)")
+			.setDesc("Silencio que cierra cada frase dictada.")
+			.addText((t) => {
+				t.inputEl.type = "number";
+				t.inputEl.min = "0.5";
+				t.inputEl.max = "10";
+				t.inputEl.step = "0.5";
+				t.setValue(String(s.silenceMs / 1000));
+				t.onChange(async (v) => {
+					const secs = Number(v);
+					if (!Number.isFinite(secs)) return;
+					s.silenceMs = clampDuration(secs * 1000, DEFAULT_SETTINGS.silenceMs, 500, 10_000);
+					await this.plugin.saveSettings();
+				});
+			});
+
+		new Setting(containerEl)
+			.setName("Duración máxima de la frase (s)")
+			.setDesc("Corta una frase que se extiende demasiado.")
+			.addText((t) => {
+				t.inputEl.type = "number";
+				t.inputEl.min = "5";
+				t.inputEl.max = "300";
+				t.inputEl.step = "5";
+				t.setValue(String(s.maxPhraseMs / 1000));
+				t.onChange(async (v) => {
+					const secs = Number(v);
+					if (!Number.isFinite(secs)) return;
+					s.maxPhraseMs = clampDuration(secs * 1000, DEFAULT_SETTINGS.maxPhraseMs, 5_000, 300_000);
+					await this.plugin.saveSettings();
+				});
+			});
 
 		const u = s.usage;
 		new Setting(containerEl)

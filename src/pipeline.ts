@@ -15,22 +15,29 @@ export interface PipelineResult {
 	};
 }
 
+export interface PipelineOptions {
+	audioSeconds?: number;
+	signal?: AbortSignal;
+}
+
 export async function dictatePipeline(
 	provider: VoiceProvider,
 	audio: Blob,
 	filename: string,
 	settings: LatexVoiceSettings,
-	audioSeconds?: number,
+	opts: PipelineOptions = {},
 ): Promise<PipelineResult> {
 	const t = await provider.transcribe(audio, filename, {
 		language: "es",
 		contextPrompt: settings.transcriptionContext,
+		signal: opts.signal,
 	});
 	if (!t.text.trim()) {
 		throw new Error("empty transcript");
 	}
 	const c = await provider.convertToLatex(t.text, {
 		systemPrompt: settings.conversionPrompt,
+		signal: opts.signal,
 	});
 	// "//" is the spoken paragraph-break marker.
 	const output = c.text.replace(/\s*\/\/\s*/g, "\n\n").trim();
@@ -39,7 +46,7 @@ export async function dictatePipeline(
 		transcript: t.text,
 		output,
 		usage: {
-			audioSeconds: t.durationSeconds ?? audioSeconds,
+			audioSeconds: t.durationSeconds ?? opts.audioSeconds,
 			inputTokens: c.inputTokens,
 			outputTokens: c.outputTokens,
 		},
