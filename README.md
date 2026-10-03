@@ -27,6 +27,10 @@ El plugin convierte lo que se dicta; no debe completar ni corregir pasos matemá
 2. En **Ajustes → Vibe LaTeX**, ingresá tu clave API de OpenAI.
 3. Permití el acceso al micrófono cuando Obsidian o el sistema lo soliciten.
 
+Opcional: ajustá la **duración de la pausa** que separa cada frase y la
+**duración máxima** de una frase. El audio se guarda con la extensión correcta
+cuando activás **Guardar audio**.
+
 ## Privacidad
 
 El audio se envía al servicio configurado para transcribirlo y el texto reconocido se envía al mismo servicio para convertirlo en Markdown y LaTeX. OpenAI se usa por defecto; la URL base permite configurar un endpoint compatible. Las grabaciones se descartan al terminar salvo que actives **Guardar audio**.
