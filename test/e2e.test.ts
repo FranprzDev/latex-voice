@@ -6,7 +6,6 @@ import { OpenAIProvider } from "../src/providers/openai";
 import {
 	DEFAULT_SETTINGS,
 	LatexVoiceSettings,
-	defaultPromptsFor,
 } from "../src/settings";
 
 /**
@@ -23,21 +22,17 @@ const FIXTURES = join(__dirname, "fixtures");
 const dictations: {
 	file: string;
 	subject: string;
-	language: "es" | "en";
+	language: "es";
 	dictated: string;
 	mustMatch: string[];
 }[] = JSON.parse(readFileSync(join(FIXTURES, "dictations.json"), "utf8"));
 
 const subjects = [...new Set(dictations.map((d) => d.subject))];
 
-function settingsFor(lang: "es" | "en"): LatexVoiceSettings {
-	const p = defaultPromptsFor(lang);
+function settingsFor(): LatexVoiceSettings {
 	return {
 		...DEFAULT_SETTINGS,
 		openaiApiKey: apiKey ?? "",
-		language: lang,
-		conversionPrompt: p.conversion,
-		transcriptionContext: p.context,
 	};
 }
 
@@ -60,7 +55,7 @@ run("e2e: dictation → LaTeX", { timeout: 300_000 }, () => {
 				provider,
 				audio,
 				d.file,
-				settingsFor(d.language),
+				settingsFor(),
 			);
 			console.log(`\n  transcript: ${transcript}\n  output: ${output}`);
 			for (const pattern of d.mustMatch) {

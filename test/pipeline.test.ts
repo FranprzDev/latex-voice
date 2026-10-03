@@ -41,4 +41,14 @@ describe("dictatePipeline", () => {
 			dictatePipeline(failing, new Blob(["a"]), "d.m4a", DEFAULT_SETTINGS),
 		).rejects.toThrow("mic dead");
 	});
+
+	it("rejects an empty conversion instead of inserting an empty correction", async () => {
+		const emptyProvider: VoiceProvider = {
+			...fakeProvider,
+			convertToLatex: async () => ({ text: "  " }),
+		};
+		await expect(
+			dictatePipeline(emptyProvider, new Blob(["a"]), "d.m4a", DEFAULT_SETTINGS),
+		).rejects.toThrow("empty conversion");
+	});
 });

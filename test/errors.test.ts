@@ -4,13 +4,16 @@ import { friendlyError } from "../src/errors";
 describe("friendlyError", () => {
 	it("maps 401 to API key message", () => {
 		expect(friendlyError(new Error("Invalid API key (HTTP 401)"))).toContain(
-			"API key",
+			"Clave API",
 		);
 	});
 	it("maps 429 to rate limit", () => {
 		expect(friendlyError(new Error("rate limit (HTTP 429)"))).toContain(
 			"Límite",
 		);
+	});
+	it("maps empty conversion to a Spanish retry message", () => {
+		expect(friendlyError(new Error("empty conversion"))).toContain("repetirlo");
 	});
 	it("maps network failures", () => {
 		expect(friendlyError(new Error("fetch failed: ENOTFOUND"))).toContain(
@@ -29,6 +32,6 @@ describe("friendlyError", () => {
 		expect(out).not.toContain("second line");
 	});
 	it("handles non-Error values", () => {
-		expect(friendlyError("plain string 401")).toContain("API key");
+		expect(friendlyError("plain string 401")).toContain("Clave API");
 	});
 });

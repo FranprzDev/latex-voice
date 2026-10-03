@@ -17,7 +17,6 @@ AM1 = "Análisis Matemático 1"
 AM2 = "Análisis Matemático 2"
 F1 = "Física 1"
 F2 = "Física 2"
-EN = "English"
 
 # (filename, subject, language, dictated text, mustMatch regexes)
 ENTRIES = [
@@ -141,6 +140,9 @@ ENTRIES = [
     ("am2-laplace.m4a", AM2, "es",
      "la transformada de laplace de e a la a te es uno sobre ese menos a",
      ["\\\\mathcal\\{L\\}|L|laplace|Laplace", "\\\\frac\\{1\\}\\{s ?- ?a\\}|1/\\(s"]),
+    ("am2-laplace-derivation.m4a", AM2, "es",
+     "procedo a cambiarlo con los datos. ye de ese es igual a a sobre ese más be sobre ese más tres más ce sobre ese más uno más de sobre ese más diez. Reemplazando con los datos, ye de ese es igual a cuatro quinceavos por uno sobre ese más tres catorceavos por uno sobre ese más tres más un tercio por uno sobre ese más uno menos ocho centésimos por uno sobre ese más diez. Aplicando la inversa de Laplace, ye de te es igual a cuatro quinceavos más tres catorceavos por e a la menos tres te más un tercio por e a la menos te menos ocho centésimos por e a la menos diez te. Cuando te tiende a infinito, e a la menos tres te tiende a cero, por lo tanto ye de te tiende a cuatro quinceavos. En el gráfico, ye de cero es cero y la curva se aproxima a cuatro quinceavos",
+     ["Y|y", "4/15|\\\\frac\\{4\\}\\{15\\}", "3/14|\\\\frac\\{3\\}\\{14\\}", "1/3|\\\\frac\\{1\\}\\{3\\}", "\\\\infty|infinito"]),
     ("am2-partial.m4a", AM2, "es",
      "la derivada parcial de equis al cuadrado por ye respecto de equis es dos equis ye",
      ["\\\\frac\\{\\\\partial|\\\\partial", "2 ?x ?y"]),
@@ -308,13 +310,6 @@ ENTRIES = [
      "la primera ley de la termodinámica es delta u igual cu menos doble ve",
      ["\\\\Delta ?U ?= ?Q ?- ?W|\\\\Delta ?U|Delta U"]),
 
-    # ---------- English ----------
-    ("en-integral.m4a", EN, "en",
-     "the integral from a to b of f of x d x",
-     ["\\\\int_a\\^b", "f\\(x\\)", "d\\s?x"]),
-    ("en-sum.m4a", EN, "en",
-     "the sum from i equals one to n of i squared",
-     ["\\\\sum_\\{i=1\\}", "\\^\\{?n\\}?", "i\\^2"]),
 ]
 
 
@@ -325,8 +320,7 @@ def main() -> None:
         path = os.path.join(FIXTURES, filename)
         if os.path.exists(path):
             continue
-        voice = "Monica" if lang == "es" else "Samantha"
-        subprocess.run(["say", "-v", voice, "-o", path, dictated], check=True)
+        subprocess.run(["say", "-v", "Monica", "-o", path, dictated], check=True)
         made += 1
         print(f"  generated {filename}", flush=True)
 

@@ -1,9 +1,9 @@
 {
 	"id": "vibe-latex",
 	"name": "Vibe LaTeX",
-	"version": "0.1.1",
+	"version": "0.2.0",
 	"minAppVersion": "1.5.0",
-	"description": "Dictate math and notes by voice \u2014 transcribed and converted to Markdown + LaTeX.",
+	"description": "Dictate Spanish equations by voice and convert them into Markdown and LaTeX.",
 	"author": "franciscoperez",
 	"isDesktopOnly": false
 }

@@ -404,6 +404,19 @@
 		]
 	},
 	{
+		"file": "am2-laplace-derivation.m4a",
+		"subject": "Análisis Matemático 2",
+		"language": "es",
+		"dictated": "procedo a cambiarlo con los datos. ye de ese es igual a a sobre ese más be sobre ese más tres más ce sobre ese más uno más de sobre ese más diez. Reemplazando con los datos, ye de ese es igual a cuatro quinceavos por uno sobre ese más tres catorceavos por uno sobre ese más tres más un tercio por uno sobre ese más uno menos ocho centésimos por uno sobre ese más diez. Aplicando la inversa de Laplace, ye de te es igual a cuatro quinceavos más tres catorceavos por e a la menos tres te más un tercio por e a la menos te menos ocho centésimos por e a la menos diez te. Cuando te tiende a infinito, e a la menos tres te tiende a cero, por lo tanto ye de te tiende a cuatro quinceavos. En el gráfico, ye de cero es cero y la curva se aproxima a cuatro quinceavos",
+		"mustMatch": [
+			"Y|y",
+			"4/15|\\\\frac\\{4\\}\\{15\\}",
+			"3/14|\\\\frac\\{3\\}\\{14\\}",
+			"1/3|\\\\frac\\{1\\}\\{3\\}",
+			"\\\\infty|infinito"
+		]
+	},
+	{
 		"file": "am2-partial.m4a",
 		"subject": "Análisis Matemático 2",
 		"language": "es",
@@ -940,28 +953,6 @@
 		"dictated": "la primera ley de la termodinámica es delta u igual cu menos doble ve",
 		"mustMatch": [
 			"\\\\Delta ?U ?= ?Q ?- ?W|\\\\Delta ?U|Delta U"
-		]
-	},
-	{
-		"file": "en-integral.m4a",
-		"subject": "English",
-		"language": "en",
-		"dictated": "the integral from a to b of f of x d x",
-		"mustMatch": [
-			"\\\\int_a\\^b",
-			"f\\(x\\)",
-			"d\\s?x"
-		]
-	},
-	{
-		"file": "en-sum.m4a",
-		"subject": "English",
-		"language": "en",
-		"dictated": "the sum from i equals one to n of i squared",
-		"mustMatch": [
-			"\\\\sum_\\{i=1\\}",
-			"\\^\\{?n\\}?",
-			"i\\^2"
 		]
 	}
 ]

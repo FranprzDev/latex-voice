@@ -6,45 +6,50 @@ import {
 	PluginSettingTab,
 	Setting,
 } from "obsidian";
+import {
+	dictationReplacementText,
+	verifiedDictationRange,
+} from "./dictation-range";
 import { AudioRecorder } from "./recorder";
 import { createProvider } from "./providers";
 import { dictatePipeline } from "./pipeline";
 import { friendlyError } from "./errors";
-import {
-	DEFAULT_SETTINGS,
-	DictationLanguage,
-	LatexVoiceSettings,
-	defaultPromptsFor,
-	isDefaultPrompt,
-} from "./settings";
+import { LatexVoiceSettings, LastDictation, migrateSettings } from "./settings";
 
 export default class LatexVoicePlugin extends Plugin {
 	declare settings: LatexVoiceSettings;
 	private recorder = new AudioRecorder();
 	private statusBarEl!: HTMLElement;
 	private sessionAbort: AbortController | null = null;
+	private pendingSave: Promise<void> = Promise.resolve();
 
 	async onload() {
 		await this.loadSettings();
 		this.statusBarEl = this.addStatusBarItem();
 		this.updateStatus("");
 
-		this.addRibbonIcon("mic", "Vibe LaTeX: toggle dictation", () => {
+		this.addRibbonIcon("mic", "Vibe LaTeX: dictar", () => {
 			void this.toggleDictation();
 		});
 
 		this.addCommand({
 			id: "toggle-dictation",
-			name: "Start/stop voice dictation",
+			name: "Iniciar o detener el dictado por voz",
 			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "M" }],
 			callback: () => void this.toggleDictation(),
+		});
+		this.addCommand({
+			id: "correct-last-dictation",
+			name: "Corregir la última frase dictada",
+			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "R" }],
+			callback: () => void this.correctLastDictation(),
 		});
 
 		this.addSettingTab(new LatexVoiceSettingTab(this.app, this));
 
 		if (!this.settings.openaiApiKey && !this.settings.devMode) {
 			new Notice(
-				"Vibe LaTeX: pegá tu OpenAI API key en Settings → Vibe LaTeX para empezar.",
+				"Vibe LaTeX: pegá tu clave API de OpenAI en Ajustes → Vibe LaTeX para empezar.",
 				8000,
 			);
 		}
@@ -56,11 +61,19 @@ export default class LatexVoicePlugin extends Plugin {
 	}
 
 	async loadSettings() {
-		this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+		this.settings = migrateSettings(await this.loadData());
 	}
 
 	async saveSettings() {
 		await this.saveData(this.settings);
+	}
+
+	/** Persists the correction target so it survives a plugin reload. */
+	private setLastDictation(target: LastDictation | null) {
+		this.settings.lastDictation = target;
+		this.pendingSave = this.pendingSave
+			.then(() => this.saveSettings())
+			.catch(() => undefined);
 	}
 
 	private updateStatus(text: string) {
@@ -77,7 +90,7 @@ export default class LatexVoicePlugin extends Plugin {
 			return;
 		}
 		if (!this.settings.openaiApiKey) {
-			new Notice("Vibe LaTeX: falta la API key (Settings → Vibe LaTeX).");
+			new Notice("Vibe LaTeX: falta la clave API (Ajustes → Vibe LaTeX).");
 			return;
 		}
 		if (!this.app.workspace.getActiveViewOfType(MarkdownView)) {
@@ -87,16 +100,36 @@ export default class LatexVoicePlugin extends Plugin {
 		void this.runSession();
 	}
 
-	/**
-	 * Continuous dictation: keeps listening, splits on silences, processes
-	 * each phrase and appends it at the cursor. Ends on second command run.
-	 */
-	private async runSession() {
+	private correctLastDictation() {
+		if (this.sessionAbort) {
+			new Notice("Terminá el dictado actual antes de corregir.");
+			return;
+		}
+		const view = this.app.workspace.getActiveViewOfType(MarkdownView);
+		const file = this.app.workspace.getActiveFile();
+		const target = this.settings.lastDictation ?? null;
+		if (!view || !file || !target || target.filePath !== file.path ||
+			!verifiedDictationRange(view.editor.getValue(), target)) {
+			new Notice(
+				"No encuentro la última frase. Seleccioná el texto que quieras reemplazar y dictá de nuevo.",
+			);
+			return;
+		}
+		if (!this.settings.openaiApiKey) {
+			new Notice("Vibe LaTeX: falta la clave API (Ajustes → Vibe LaTeX).");
+			return;
+		}
+		void this.runSession(target);
+	}
+
+	private async runSession(replaceTarget?: LastDictation) {
 		this.sessionAbort = new AbortController();
 		const signal = this.sessionAbort.signal;
 		const provider = createProvider(this.settings);
-		this.updateStatus("escuchando…");
-		new Notice("Vibe LaTeX: escuchando. Volvé a correr el comando para terminar.");
+		this.updateStatus(replaceTarget ? "corrigiendo…" : "escuchando…");
+		new Notice(replaceTarget
+			? "Decí de nuevo la frase completa que querés corregir."
+			: "Vibe LaTeX: escuchando. Volvé a correr el comando para terminar.");
 
 		try {
 			while (!signal.aborted) {
@@ -114,14 +147,47 @@ export default class LatexVoicePlugin extends Plugin {
 					);
 					await this.recordUsage(usage);
 					const view = this.app.workspace.getActiveViewOfType(MarkdownView);
-					if (view) {
-						const cursor = view.editor.getCursor();
-						const text = output + "\n";
-						view.editor.replaceRange(text, cursor);
-						view.editor.setCursor({
-							line: cursor.line + text.split("\n").length - 1,
-							ch: 0,
-						});
+					const file = this.app.workspace.getActiveFile();
+					if (replaceTarget && (!view || !file)) {
+						new Notice("Abrí la nota de la última frase para poder corregirla.");
+						break;
+					}
+					if (view && file) {
+						const editor = view.editor;
+						const text = dictationReplacementText(
+							output,
+							editor.getSelection(),
+							replaceTarget?.text,
+						);
+						if (replaceTarget) {
+							const range = verifiedDictationRange(editor.getValue(), replaceTarget);
+							if (file.path !== replaceTarget.filePath || !range) {
+								new Notice("La frase cambió durante la corrección; no la reemplacé.");
+								break;
+							}
+							const from = editor.offsetToPos(range.from);
+							const to = editor.offsetToPos(range.to);
+							editor.replaceRange(text, from, to);
+							this.setLastDictation({
+								filePath: file.path,
+								from: range.from,
+								to: range.from + text.length,
+								text,
+							});
+							editor.setCursor(editor.offsetToPos(range.from + text.length));
+						} else {
+							const from = editor.getCursor("from");
+							const to = editor.getCursor("to");
+							const start = editor.posToOffset(from);
+							editor.replaceRange(text, from, to);
+							this.setLastDictation({
+								filePath: file.path,
+								from: start,
+								to: start + text.length,
+								text,
+							});
+							editor.setCursor(editor.offsetToPos(start + text.length));
+						}
 					}
 					if (this.settings.saveAudio) {
 						await this.saveAudioFile(blob, "webm");
@@ -129,6 +195,7 @@ export default class LatexVoicePlugin extends Plugin {
 				} catch (e) {
 					new Notice(`Vibe LaTeX: ${friendlyError(e)}`);
 				}
+				if (replaceTarget) break;
 				if (!signal.aborted) this.updateStatus("escuchando…");
 			}
 		} catch (e) {
@@ -147,7 +214,7 @@ export default class LatexVoicePlugin extends Plugin {
 			return;
 		}
 		try {
-			this.updateStatus("transcribing…");
+			this.updateStatus("transcribiendo…");
 			const buffer = await this.app.vault.adapter.readBinary(path);
 			const audio = new Blob([buffer]);
 			const provider = createProvider(this.settings);
@@ -193,12 +260,12 @@ class LatexVoiceSettingTab extends PluginSettingTab {
 		const s = this.plugin.settings;
 
 		containerEl.createEl("p", {
-			text: "BYOK: bring your own OpenAI API key — that's the only requirement.",
+			text: "Usá tu propia clave de OpenAI; se necesita para transcribir el audio y convertirlo en LaTeX.",
 		});
 
 		const apiKeySetting = new Setting(containerEl)
-			.setName("OpenAI API key")
-			.setDesc("Required. Get one at platform.openai.com → API keys.")
+			.setName("Clave API de OpenAI")
+			.setDesc("Necesaria. Obtenela en platform.openai.com, en la sección de claves API.")
 			.addText((t) =>
 				t.setPlaceholder("sk-...")
 					.setValue(s.openaiApiKey)
@@ -210,8 +277,8 @@ class LatexVoiceSettingTab extends PluginSettingTab {
 		apiKeySetting.controlEl.querySelector("input")?.setAttribute("type", "password");
 
 		new Setting(containerEl)
-			.setName("Base URL")
-			.setDesc("OpenAI-compatible endpoint.")
+			.setName("URL base")
+			.setDesc("Dirección de un servicio compatible con la API de OpenAI.")
 			.addText((t) =>
 				t.setValue(s.openaiBaseUrl).onChange(async (v) => {
 					s.openaiBaseUrl = v.trim();
@@ -220,7 +287,7 @@ class LatexVoiceSettingTab extends PluginSettingTab {
 			);
 
 		new Setting(containerEl)
-			.setName("Transcription model")
+			.setName("Modelo de transcripción")
 			.addText((t) =>
 				t.setValue(s.transcriptionModel).onChange(async (v) => {
 					s.transcriptionModel = v.trim();
@@ -229,7 +296,7 @@ class LatexVoiceSettingTab extends PluginSettingTab {
 			);
 
 		new Setting(containerEl)
-			.setName("Conversion model")
+			.setName("Modelo de conversión")
 			.addText((t) =>
 				t.setValue(s.conversionModel).onChange(async (v) => {
 					s.conversionModel = v.trim();
@@ -238,28 +305,8 @@ class LatexVoiceSettingTab extends PluginSettingTab {
 			);
 
 		new Setting(containerEl)
-			.setName("Dictation language")
-			.setDesc("Language you dictate math in. Switching updates default prompts unless customized.")
-			.addDropdown((d) =>
-				d.addOption("es", "Español")
-					.addOption("en", "English")
-					.addOption("auto", "Auto-detect")
-					.setValue(s.language)
-					.onChange(async (v) => {
-						s.language = v as DictationLanguage;
-						if (isDefaultPrompt(s)) {
-							const p = defaultPromptsFor(s.language);
-							s.conversionPrompt = p.conversion;
-							s.transcriptionContext = p.context;
-						}
-						await this.plugin.saveSettings();
-						this.display();
-					})
-			);
-
-		new Setting(containerEl)
-			.setName("Transcription context")
-			.setDesc("Vocabulary hints sent to the transcription model.")
+			.setName("Contexto de transcripción")
+			.setDesc("Vocabulario matemático que se envía al modelo de transcripción.")
 			.addTextArea((t) => {
 				t.setValue(s.transcriptionContext).onChange(async (v) => {
 					s.transcriptionContext = v;
@@ -270,8 +317,8 @@ class LatexVoiceSettingTab extends PluginSettingTab {
 			});
 
 		new Setting(containerEl)
-			.setName("Conversion prompt")
-			.setDesc("System prompt for transcript → Markdown/LaTeX.")
+			.setName("Instrucciones de conversión")
+			.setDesc("Reglas para convertir el dictado en Markdown y LaTeX.")
 			.addTextArea((t) => {
 				t.setValue(s.conversionPrompt).onChange(async (v) => {
 					s.conversionPrompt = v;
@@ -282,8 +329,8 @@ class LatexVoiceSettingTab extends PluginSettingTab {
 			});
 
 		new Setting(containerEl)
-			.setName("Save audio")
-			.setDesc("Keep recordings in the vault.")
+			.setName("Guardar audio")
+			.setDesc("Conservá las grabaciones en la bóveda.")
 			.addToggle((t) =>
 				t.setValue(s.saveAudio).onChange(async (v) => {
 					s.saveAudio = v;
@@ -292,7 +339,7 @@ class LatexVoiceSettingTab extends PluginSettingTab {
 			);
 
 		new Setting(containerEl)
-			.setName("Audio folder")
+			.setName("Carpeta de audio")
 			.addText((t) =>
 				t.setValue(s.audioFolder).onChange(async (v) => {
 					s.audioFolder = v.trim();
@@ -302,13 +349,13 @@ class LatexVoiceSettingTab extends PluginSettingTab {
 
 		const u = s.usage;
 		new Setting(containerEl)
-			.setName("Usage")
+			.setName("Uso")
 			.setDesc(
-				`${u.requests} dictations · ${Math.round(u.audioSeconds)}s audio · ` +
+				`${u.requests} dictados · ${Math.round(u.audioSeconds)} s de audio · ` +
 					`${u.inputTokens + u.outputTokens} tokens`,
 			)
 			.addButton((b) =>
-				b.setButtonText("Reset").onClick(async () => {
+				b.setButtonText("Restablecer").onClick(async () => {
 					s.usage = { audioSeconds: 0, inputTokens: 0, outputTokens: 0, requests: 0 };
 					await this.plugin.saveSettings();
 					this.display();

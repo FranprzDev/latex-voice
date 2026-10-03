@@ -1,59 +1,44 @@
 # Vibe LaTeX
 
-Dictate math and notes by voice in Obsidian. Speak in Spanish or English —
-your words are transcribed and converted into Markdown + LaTeX at the cursor.
+Dictá ecuaciones en español y convertí lo que vas explicando en Markdown y LaTeX dentro de Obsidian. Podés narrar una resolución paso a paso sin dictar comandos de LaTeX.
 
-> "la integral de a a b de efe de equis de equis" → `$\int_a^b f(x)\,dx$`
+> “la integral de a a b de efe de equis de equis” → `$\int_a^b f(x)\,dx$`
 
-## How it works
+## Uso
 
-```
-voice → transcription (gpt-transcribe) → LLM conversion → Markdown + LaTeX
-```
+1. Ejecutá **Vibe LaTeX: Iniciar o detener el dictado por voz** desde la paleta de comandos o con el atajo `Cmd/Ctrl+Shift+M`.
+2. Dictá en español. Las pausas separan fragmentos y cada resultado se inserta en la nota.
+3. Volvé a ejecutar el comando para terminar.
 
-1. Run **Vibe LaTeX: Start/stop voice dictation** (ribbon icon or hotkey)
-2. Speak — e.g. *"sumatoria de i igual a uno hasta n de i al cuadrado"*
-3. Run the command again → `$\sum_{i=1}^{n} i^2$` appears at the cursor
+Para corregir el último fragmento, ejecutá **Vibe LaTeX: Corregir la última frase dictada** (`Cmd/Ctrl+Shift+R`) y volvé a dictar ese fragmento completo. La corrección recuerda la última frase incluso después de reiniciar Obsidian, siempre que la nota no haya cambiado. También podés seleccionar texto existente en la nota e iniciar el dictado para reemplazarlo con voz.
 
-## Features
+## Qué convierte
 
-- Dictation in **Spanish and English** (selectable; per-language math
-  vocabulary and homophone fixes: "equis"→x, "dee ex"→dx)
-- Inline `$...$` and display `$$...$$` math, Markdown prose mixed in
-- Configurable transcription & conversion models, plus an editable
-  conversion prompt
-- Optional: keep audio recordings in your vault
-- Provider abstraction: OpenAI by default, any OpenAI-compatible endpoint
-  via the Base URL setting
+- Texto explicativo en español mezclado con ecuaciones.
+- Derivaciones de varios pasos, sustituciones, fracciones parciales, transformadas y límites, respetando el orden dictado.
+- Vocabulario matemático hablado, como “equis”, “i griega”, “de equis”, “alfa” e “infinito”.
+- Anotaciones de gráficos descriptas en voz.
 
-## Setup
+El plugin convierte lo que se dicta; no debe completar ni corregir pasos matemáticos que no se hayan dicho. La conversión requiere una clave API de OpenAI. El servicio puede cobrar el uso según la cuenta del usuario.
 
-1. Install the plugin, enable it
-2. Settings → Vibe LaTeX → paste your **OpenAI API key**
-3. Optional: assign a hotkey for **Start/stop voice dictation**
-   (e.g. `Cmd+Shift+M`)
-4. Grant microphone permission when macOS asks
+## Configuración
 
-## Requirements & cost
+1. Instalá y habilitá el plugin.
+2. En **Ajustes → Vibe LaTeX**, ingresá tu clave API de OpenAI.
+3. Permití el acceso al micrófono cuando Obsidian o el sistema lo soliciten.
 
-- An OpenAI API key. Dictating a minute of math costs roughly $0.01–0.02.
-- Desktop and mobile (any platform with microphone access).
+## Privacidad
 
-## Development
+El audio se envía al servicio configurado para transcribirlo y el texto reconocido se envía al mismo servicio para convertirlo en Markdown y LaTeX. OpenAI se usa por defecto; la URL base permite configurar un endpoint compatible. Las grabaciones se descartan al terminar salvo que actives **Guardar audio**.
+
+## Desarrollo
 
 ```bash
 npm install
-npm run build          # bundle to main.js
-
-npm test               # unit tests
-npm run test:e2e       # real API e2e with synthesized speech (needs OPENAI_API_KEY)
-npm run test:obsidian  # drives real Obsidian over CDP (Obsidian must not be running)
+npm run build
+npm test
+npm run test:e2e       # requiere OPENAI_API_KEY
+npm run test:obsidian  # requiere Obsidian cerrado y disponible por CDP
 ```
 
-Test audio fixtures are synthesized with macOS `say` — the pipeline is
-verified end-to-end without a human speaking.
-
-## Privacy
-
-Audio is sent to the configured provider for transcription. Recordings are
-discarded unless "Save audio" is enabled.
+Los fixtures de audio se sintetizan con `say` en macOS. La prueba `test:e2e` comprueba la transcripción y la conversión usando el servicio configurado.
